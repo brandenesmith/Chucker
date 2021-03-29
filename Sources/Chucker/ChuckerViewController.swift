@@ -16,7 +16,8 @@ public final class ChuckerViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
 
     private lazy var noItemsView: NoItemsView = {
-        let noItemsView = Bundle(for: ChuckerViewController.self)
+        let noItemsView = Bundle
+            .module
             .loadNibNamed(NoItemsView.nibName, owner: nil, options: nil)!
             .first as! NoItemsView
 
@@ -48,7 +49,7 @@ public final class ChuckerViewController: UIViewController {
         self.recordSwitch.isOn = networkTrafficManager.shouldRecord
         
         tableView.register(
-            UINib(nibName: "NetworkListItemCell", bundle: Bundle.init(for: ChuckerViewController.self)),
+            UINib(nibName: "NetworkListItemCell", bundle: Bundle.module),
             forCellReuseIdentifier: "NetworkListItemCell"
         )
 
@@ -100,7 +101,7 @@ public extension ChuckerViewController {
     static func make() -> UIViewController {
         return UIStoryboard(
             name: "Chucker",
-            bundle: Bundle(for: ChuckerViewController.self)
+            bundle: Bundle.module
         ).instantiateInitialViewController() as! ChuckerViewController
     }
 }
