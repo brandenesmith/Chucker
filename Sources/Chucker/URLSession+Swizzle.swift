@@ -45,9 +45,6 @@ extension URLSession {
     }
 
     @objc func swizzledDataTask(with request: URLRequest) -> URLSessionDataTask {
-        let networkRequest = NetworkRequest(date: Date(), request: request)
-        networkTrafficManager.addRequest(networkRequest)
-
         return dataTask(with: request, completionHandler: { (data, response, error) in
             // Do nothing, we expect our swizzled version of this method to insert the correct completion here.
         })
