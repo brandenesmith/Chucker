@@ -102,7 +102,7 @@ public extension ChuckerViewController {
         return UIStoryboard(
             name: "Chucker",
             bundle: Bundle.module
-        ).instantiateInitialViewController() as! ChuckerViewController
+        ).instantiateInitialViewController()!
     }
 }
 
