@@ -11,10 +11,20 @@ extension URLSession {
     private typealias CombinedDataTask = @convention(c) (AnyObject, Selector, URLRequest, (Data?, URLResponse?, Error?) -> Void) -> Void
     private static let oldSelector = #selector(URLSession.dataTask(with:completionHandler:) as (URLSession) -> (URLRequest, @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask)
 
-    static func swizzleDataTask() {
+    static func swizzleDataTaskWithRequestCompletion() {
         method_exchangeImplementations(
             class_getInstanceMethod(URLSession.self, oldSelector)!,
             class_getInstanceMethod(URLSession.self, #selector(swizzledDataTask(with:completionHandler:)))!
+        )
+    }
+
+    static func swizzleDataTaskWithRequest() {
+        method_exchangeImplementations(
+            class_getInstanceMethod(
+                URLSession.self,
+                #selector(URLSession.dataTask(with:) as (URLSession) -> (URLRequest) -> URLSessionDataTask)
+            )!,
+            class_getInstanceMethod(URLSession.self, #selector(swizzledDataTask(with:)))!
         )
     }
 
@@ -32,5 +42,12 @@ extension URLSession {
         }
 
         return swizzledDataTask(with: request, completionHandler: replacedCompletion)
+    }
+
+    @objc func swizzledDataTask(with request: URLRequest) -> URLSessionDataTask {
+        let networkRequest = NetworkRequest(date: Date(), request: request)
+        networkTrafficManager.addRequest(networkRequest)
+
+        return swizzledDataTask(with: request)
     }
 }

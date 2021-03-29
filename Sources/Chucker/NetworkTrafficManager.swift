@@ -32,7 +32,8 @@ final class NetworkTrafficManager {
     internal var shouldRecord: Bool = false {
         didSet {
             URLSessionDataTask.swizzleResume()
-            URLSession.swizzleDataTask()
+            URLSession.swizzleDataTaskWithRequest()
+            URLSession.swizzleDataTaskWithRequestCompletion()
         }
     }
 
