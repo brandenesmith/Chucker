@@ -16,8 +16,7 @@ public final class ChuckerViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
 
     private lazy var noItemsView: NoItemsView = {
-        let noItemsView = Bundle
-            .main
+        let noItemsView = Bundle(for: ChuckerViewController.self)
             .loadNibNamed(NoItemsView.nibName, owner: nil, options: nil)!
             .first as! NoItemsView
 
@@ -101,7 +100,7 @@ public extension ChuckerViewController {
     static func make() -> UIViewController {
         return UIStoryboard(
             name: "Chucker",
-            bundle: Bundle(for: Self.self)
+            bundle: Bundle(for: ChuckerViewController.self)
         ).instantiateInitialViewController() as! ChuckerViewController
     }
 }
