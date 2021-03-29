@@ -1,2 +1,3 @@
 # Chucker
-A Local Network Traffic Logger for iOS
+
+A local network traffic debugging utility for iOS.
