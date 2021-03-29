@@ -98,11 +98,11 @@ public final class ChuckerViewController: UIViewController {
 }
 
 public extension ChuckerViewController {
-    static func make() -> UIViewController {
+    static func make() -> ChuckerViewController {
         return UIStoryboard(
             name: "Chucker",
             bundle: Bundle.module
-        ).instantiateInitialViewController()!
+        ).instantiateInitialViewController() as! ChuckerViewController
     }
 }
 
