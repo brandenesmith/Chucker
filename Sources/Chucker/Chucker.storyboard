@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="yTF-Vf-PJO">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -11,7 +12,7 @@
         <!--Chucker View Controller-->
         <scene sceneID="COW-TS-ibb">
             <objects>
-                <viewController id="yTF-Vf-PJO" customClass="ChuckerViewController" customModule="Chucker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="yTF-Vf-PJO" customClass="ChuckerViewController" customModule="Chucker" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="wkI-Ca-y0n">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -71,7 +72,7 @@
         <!--Network Item Detail View Controller-->
         <scene sceneID="2yM-Er-Rf5">
             <objects>
-                <viewController id="4KR-5L-eI6" customClass="NetworkItemDetailViewController" customModule="Chucker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="4KR-5L-eI6" customClass="NetworkItemDetailViewController" customModule="Chucker" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="aW2-mW-Rjn">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
