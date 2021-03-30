@@ -59,16 +59,16 @@ final class NetworkItemDetailViewController: UIViewController {
         UIView.animate(withDuration: 0.25, animations: {
             switch change {
             case .request:
-                self.requestButton.imageView?.transform = self.requestButton.imageView!.transform.rotated(
-                    by: (self.requestIsOpen)
+                self.requestButton.imageView?.transform = CGAffineTransform(
+                    rotationAngle: (self.requestIsOpen)
                         ? CGFloat(Double.pi / 4.0)
-                        : CGFloat(-(Double.pi / 4.0))
+                        : CGFloat((Double.pi / 4.0) * -1)
                 )
             case .response:
-                self.responseButton.imageView?.transform = self.requestButton.imageView!.transform.rotated(
-                    by: (self.responseIsOpen)
+                self.responseButton.imageView?.transform = CGAffineTransform(
+                    rotationAngle: (self.responseIsOpen)
                         ? CGFloat(Double.pi / 4.0)
-                        : CGFloat(-(Double.pi / 4.0))
+                        : CGFloat((Double.pi / 4.0) * -1)
                 )
             }
         })
