@@ -22,6 +22,19 @@ extension SessionDelegate {
         )
     }
 
+    static func swizzleURLSessionTaskDidCompleteWithError() {
+        method_exchangeImplementations(
+            class_getInstanceMethod(
+                SessionDelegate.self,
+                #selector(SessionDelegate.urlSession(_:task:didCompleteWithError:))
+            )!,
+            class_getInstanceMethod(
+                SessionDelegate.self,
+                #selector(SessionDelegate.swizzledUrlSessionTaskDidCompleteWithError(_:task:didCompleteWithError:))
+            )!
+        )
+    }
+
     @objc func swizzledURLSessionTaskDidReceiveData(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         let networkRequest = NetworkRequest(date: Date(), request: dataTask.originalRequest!)
         networkTrafficManager.addRequest(networkRequest)
@@ -32,5 +45,15 @@ extension SessionDelegate {
         )
 
         return swizzledURLSessionTaskDidReceiveData(session, dataTask: dataTask, didReceive: data)
+    }
+
+    @objc func swizzledUrlSessionTaskDidCompleteWithError(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        let networkRequest = NetworkRequest(date: Date(), request: task.originalRequest!)
+        networkTrafficManager.addRequest(networkRequest)
+
+        networkTrafficManager.pairResponse(
+            response: NetworkResponse(date: Date(), response: task.response, data: nil, error: error),
+            with: networkRequest
+        )
     }
 }
