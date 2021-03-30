@@ -133,6 +133,11 @@ extension ChuckerViewController: UITableViewDataSource {
             }
         }
 
+        if item.response?.error != nil {
+            cell.iconView.image = UIImage(systemName: "xmark.octagon.fill")
+            cell.iconView.tintColor = .systemRed
+        }
+
         return cell
     }
 }
