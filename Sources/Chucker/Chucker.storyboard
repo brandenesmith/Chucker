@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="yTF-Vf-PJO">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -152,12 +153,12 @@
                     </view>
                     <navigationItem key="navigationItem" id="pr1-im-sJd"/>
                     <connections>
-                        <outlet property="reqponseTextViewHeight" destination="d2w-TE-KtB" id="48V-6u-fnt"/>
                         <outlet property="requestButton" destination="cO7-aS-Ep2" id="rIl-Rq-ASb"/>
                         <outlet property="requestTextView" destination="BnR-Zm-gW2" id="gKB-sp-lBc"/>
                         <outlet property="requestTextViewHeight" destination="qE6-gv-3U4" id="gIn-Sx-NCQ"/>
                         <outlet property="responseButton" destination="wv3-D8-B1o" id="LjW-2f-cPX"/>
                         <outlet property="responseTextView" destination="xmp-U6-xjS" id="NBW-KX-b2C"/>
+                        <outlet property="responseTextViewHeight" destination="d2w-TE-KtB" id="Qv9-Jd-gEM"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Q76-VY-YLM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
