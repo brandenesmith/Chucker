@@ -17,14 +17,19 @@ final class NetworkItemDetailViewController: UIViewController {
 
     private var requestIsOpen: Bool = true {
         didSet {
-            updateViewForStateChange()
+            updateViewForStateChange(.request)
         }
     }
 
     private var responseIsOpen: Bool = true {
         didSet {
-            updateViewForStateChange()
+            updateViewForStateChange(.response)
         }
+    }
+
+    private enum StateChange {
+        case request
+        case response
     }
 
     override func viewDidLoad() {
@@ -50,21 +55,22 @@ final class NetworkItemDetailViewController: UIViewController {
         responseTextView.attributedText = URLSession.convertResponseToString(response.data, response.response, response.error)
     }
 
-    private func updateViewForStateChange() {
+    private func updateViewForStateChange(_ change: StateChange) {
         UIView.animate(withDuration: 0.25, animations: {
-            // CATransform3D.MakeRotation((float)(Math.PI / 180 * 45), 0.0001f, 0.0001f, 1);
-            self.requestButton.imageView?.layer.transform = CATransform3DMakeRotation(
-                (self.requestIsOpen) ? CGFloat(Double.pi / 2.0) : CGFloat(-(Double.pi / 2.0)),
-                0,
-                0,
-                0
-            )
-            self.responseButton.imageView?.layer.transform = CATransform3DMakeRotation(
-                (self.requestIsOpen) ? CGFloat(Double.pi / 2.0) : CGFloat(-(Double.pi / 2.0)),
-                0,
-                0,
-                0
-            )
+            switch change {
+            case .request:
+                self.requestButton.imageView?.transform = self.requestButton.imageView!.transform.rotated(
+                    by: (self.requestIsOpen)
+                        ? CGFloat(Double.pi / 4.0)
+                        : CGFloat(-(Double.pi / 4.0))
+                )
+            case .response:
+                self.responseButton.imageView?.transform = self.requestButton.imageView!.transform.rotated(
+                    by: (self.responseIsOpen)
+                        ? CGFloat(Double.pi / 4.0)
+                        : CGFloat(-(Double.pi / 4.0))
+                )
+            }
         })
     }
 
