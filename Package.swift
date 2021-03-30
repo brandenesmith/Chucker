@@ -16,12 +16,14 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(name: "Alamofire", url: "https://github.com/Alamofire/Alamofire.git", .exact("5.4.1"))
+        .package(name: "Alamofire", url: "https://github.com/Alamofire/Alamofire.git", .exact("5.4.1")),
+        .package(name: "Apollo", url: "https://github.com/apollographql/apollo-ios.git", .exact("0.42.0"))
     ],
     targets: [
         .target(
             name: "Chucker",
-            dependencies: ["Alamofire"]),
+            dependencies: ["Alamofire", "Apollo"]
+        ),
         .testTarget(
             name: "ChuckerTests",
             dependencies: ["Chucker"])
