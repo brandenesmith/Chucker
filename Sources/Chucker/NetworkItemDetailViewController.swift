@@ -15,6 +15,12 @@ final class NetworkItemDetailViewController: UIViewController {
     @IBOutlet weak var requestButton: UIButton!
     @IBOutlet weak var responseButton: UIButton!
 
+    @IBOutlet weak var requestTextViewHeight: NSLayoutConstraint!
+    @IBOutlet weak var responseTextViewHeight: NSLayoutConstraint!
+
+    private var initialRequestTextViewHeight: CGFloat!
+    private var initialResponseTextViewHeight: CGFloat!
+
     private var requestIsOpen: Bool = true {
         didSet {
             updateViewForStateChange(.request)
@@ -40,11 +46,13 @@ final class NetworkItemDetailViewController: UIViewController {
     }
 
     private func populateRequestTextView() {
+        self.initialRequestTextViewHeight = requestTextViewHeight.constant
         let request = networkListItem.request.request
         requestTextView.attributedText = request.toString()
     }
 
     private func populateResponseTextView() {
+        self.initialResponseTextViewHeight = responseTextViewHeight.constant
         guard let response = networkListItem.response else {
             responseTextView.attributedText = NSMutableAttributedString()
                 .normal("No Data Available")
@@ -59,17 +67,21 @@ final class NetworkItemDetailViewController: UIViewController {
         UIView.animate(withDuration: 0.25, animations: {
             switch change {
             case .request:
-                self.requestButton.imageView?.transform = CGAffineTransform(
-                    rotationAngle: (self.requestIsOpen)
-                        ? CGFloat(Double.pi / 4.0)
-                        : CGFloat((Double.pi / 4.0) * -1)
-                )
+                if self.requestIsOpen {
+                    self.requestTextViewHeight.constant = self.initialRequestTextViewHeight
+                    self.requestButton.imageView?.transform = self.requestButton.imageView!.transform.rotated(by: .pi / 2.0)
+                } else {
+                    self.requestTextViewHeight.constant = 0.0
+                    self.requestButton.imageView?.transform = self.requestButton.imageView!.transform.rotated(by: (.pi / 2.0) * -1.0)
+                }
             case .response:
-                self.responseButton.imageView?.transform = CGAffineTransform(
-                    rotationAngle: (self.responseIsOpen)
-                        ? CGFloat(Double.pi / 4.0)
-                        : CGFloat((Double.pi / 4.0) * -1)
-                )
+                if self.responseIsOpen {
+                    self.responseTextViewHeight.constant = self.initialResponseTextViewHeight
+                    self.responseButton.imageView?.transform = self.responseButton.imageView!.transform.rotated(by: .pi / 2.0)
+                } else {
+                    self.responseTextViewHeight.constant = 0.0
+                    self.responseButton.imageView?.transform = self.responseButton.imageView!.transform.rotated(by: (.pi / 2.0) * -1.0)
+                }
             }
         })
     }
