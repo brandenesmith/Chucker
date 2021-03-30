@@ -6,6 +6,7 @@
 //
 
 import Alamofire
+import Apollo
 import Foundation
 
 struct NetworkRequest: Equatable, Hashable {
@@ -36,6 +37,8 @@ final class NetworkTrafficManager {
             URLSession.swizzleDataTaskWithRequestCompletion()
             SessionDelegate.swizzleURLSessionTaskDidReceiveData()
             SessionDelegate.swizzleURLSessionTaskDidCompleteWithError()
+            URLSessionClient.swizzleURLSessionTaskDidReceiveData()
+            URLSessionClient.swizzleURLSessionTaskDidCompleteWithError()
         }
     }
 
