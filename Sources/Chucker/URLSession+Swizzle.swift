@@ -18,16 +18,6 @@ extension URLSession {
         )
     }
 
-    static func swizzleDataTaskWithRequest() {
-        method_exchangeImplementations(
-            class_getInstanceMethod(
-                URLSession.self,
-                #selector(URLSession.dataTask(with:) as (URLSession) -> (URLRequest) -> URLSessionDataTask)
-            )!,
-            class_getInstanceMethod(URLSession.self, #selector(swizzledDataTask(with:)))!
-        )
-    }
-
     @objc func swizzledDataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
         let networkRequest = NetworkRequest(date: Date(), request: request)
         networkTrafficManager.addRequest(networkRequest)
@@ -42,11 +32,5 @@ extension URLSession {
         }
 
         return swizzledDataTask(with: request, completionHandler: replacedCompletion)
-    }
-
-    @objc func swizzledDataTask(with request: URLRequest) -> URLSessionDataTask {
-        return dataTask(with: request, completionHandler: { (data, response, error) in
-            // Do nothing, we expect our swizzled version of this method to insert the correct completion here.
-        })
     }
 }

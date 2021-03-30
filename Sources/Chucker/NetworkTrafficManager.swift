@@ -5,6 +5,7 @@
 //  Created by Branden Smith on 3/26/21.
 //
 
+import Alamofire
 import Foundation
 
 struct NetworkRequest: Equatable, Hashable {
@@ -32,8 +33,8 @@ final class NetworkTrafficManager {
     internal var shouldRecord: Bool = false {
         didSet {
             URLSessionDataTask.swizzleResume()
-            URLSession.swizzleDataTaskWithRequest()
             URLSession.swizzleDataTaskWithRequestCompletion()
+            SessionDelegate.swizzleURLSessionTaskDidReceiveData()
         }
     }
 
