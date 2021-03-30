@@ -48,6 +48,10 @@ extension SessionDelegate {
     }
 
     @objc func swizzledUrlSessionTaskDidCompleteWithError(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        defer { swizzledUrlSessionTaskDidCompleteWithError(session, task: task, didCompleteWithError: error) }
+
+        guard let error = error else { return }
+
         let networkRequest = NetworkRequest(date: Date(), request: task.originalRequest!)
         networkTrafficManager.addRequest(networkRequest)
 
