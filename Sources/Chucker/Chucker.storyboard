@@ -78,87 +78,75 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BnR-Zm-gW2">
-                                <rect key="frame" x="20" y="42" width="374" height="378"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Kra-0V-3ky">
+                                <rect key="frame" x="20" y="10" width="414" height="788"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cO7-aS-Ep2">
+                                        <rect key="frame" x="0.0" y="0.0" width="83.5" height="22"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
+                                        <color key="tintColor" systemColor="labelColor"/>
+                                        <state key="normal" title="Request">
+                                            <color key="titleColor" systemColor="labelColor"/>
+                                            <imageReference key="image" image="arrowtriangle.down.fill" catalog="system" symbolScale="small" renderingMode="template"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="requestButtonTouched:" destination="4KR-5L-eI6" eventType="touchUpInside" id="6PO-wh-FIi"/>
+                                        </connections>
+                                    </button>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BnR-Zm-gW2">
+                                        <rect key="frame" x="0.0" y="32" width="414" height="353.5"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <color key="textColor" systemColor="labelColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Rc-7e-W6e">
+                                        <rect key="frame" x="0.0" y="395.5" width="414" height="2"/>
+                                        <color key="backgroundColor" systemColor="labelColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="2" id="UDy-GO-TcQ"/>
+                                        </constraints>
+                                    </view>
+                                    <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wv3-D8-B1o">
+                                        <rect key="frame" x="0.0" y="407.5" width="96.5" height="22"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
+                                        <color key="tintColor" systemColor="labelColor"/>
+                                        <state key="normal" title="Response">
+                                            <color key="titleColor" systemColor="labelColor"/>
+                                            <imageReference key="image" image="arrowtriangle.down.fill" catalog="system" symbolScale="small" renderingMode="template"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="responseButtonTouched:" destination="4KR-5L-eI6" eventType="touchUpInside" id="YAX-uW-gTs"/>
+                                        </connections>
+                                    </button>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xmp-U6-xjS">
+                                        <rect key="frame" x="0.0" y="439.5" width="414" height="348.5"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <attributedString key="attributedText"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
+                                </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" id="qE6-gv-3U4"/>
+                                    <constraint firstItem="BnR-Zm-gW2" firstAttribute="height" relation="greaterThanOrEqual" secondItem="Kra-0V-3ky" secondAttribute="height" multiplier="0.448604" id="LoS-L3-6UN"/>
+                                    <constraint firstItem="BnR-Zm-gW2" firstAttribute="height" secondItem="xmp-U6-xjS" secondAttribute="height" multiplier="1.01435" id="NGY-Yp-Fit"/>
                                 </constraints>
-                                <color key="textColor" systemColor="labelColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                            </textView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xmp-U6-xjS">
-                                <rect key="frame" x="20" y="464" width="374" height="334"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" id="d2w-TE-KtB"/>
-                                </constraints>
-                                <attributedString key="attributedText"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                            </textView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Rc-7e-W6e">
-                                <rect key="frame" x="10" y="420" width="394" height="2"/>
-                                <color key="backgroundColor" systemColor="labelColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="2" id="UDy-GO-TcQ"/>
-                                </constraints>
-                            </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cO7-aS-Ep2">
-                                <rect key="frame" x="20" y="10" width="374" height="22"/>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
-                                <color key="tintColor" systemColor="labelColor"/>
-                                <state key="normal" title="Request">
-                                    <color key="titleColor" systemColor="labelColor"/>
-                                    <imageReference key="image" image="arrowtriangle.down.fill" catalog="system" symbolScale="small" renderingMode="template"/>
-                                </state>
-                                <connections>
-                                    <action selector="requestButtonTouched:" destination="4KR-5L-eI6" eventType="touchUpInside" id="6PO-wh-FIi"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wv3-D8-B1o">
-                                <rect key="frame" x="20" y="432" width="384" height="22"/>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
-                                <color key="tintColor" systemColor="labelColor"/>
-                                <state key="normal" title="Response">
-                                    <color key="titleColor" systemColor="labelColor"/>
-                                    <imageReference key="image" image="arrowtriangle.down.fill" catalog="system" renderingMode="template"/>
-                                </state>
-                                <connections>
-                                    <action selector="responseButtonTouched:" destination="4KR-5L-eI6" eventType="touchUpInside" id="YAX-uW-gTs"/>
-                                </connections>
-                            </button>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Wrs-Tj-lbY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="wv3-D8-B1o" firstAttribute="top" secondItem="6Rc-7e-W6e" secondAttribute="bottom" constant="10" id="5hw-Ng-4MT"/>
-                            <constraint firstItem="Wrs-Tj-lbY" firstAttribute="trailing" secondItem="cO7-aS-Ep2" secondAttribute="trailing" constant="20" id="Hwc-KX-0dr"/>
-                            <constraint firstItem="6Rc-7e-W6e" firstAttribute="centerY" secondItem="aW2-mW-Rjn" secondAttribute="centerY" priority="750" id="IXv-GT-a3u"/>
-                            <constraint firstItem="BnR-Zm-gW2" firstAttribute="top" secondItem="cO7-aS-Ep2" secondAttribute="bottom" constant="10" id="Jgr-K3-y5w"/>
-                            <constraint firstItem="xmp-U6-xjS" firstAttribute="top" secondItem="wv3-D8-B1o" secondAttribute="bottom" constant="10" id="L2c-0T-d9I"/>
-                            <constraint firstItem="Wrs-Tj-lbY" firstAttribute="trailing" secondItem="BnR-Zm-gW2" secondAttribute="trailing" constant="20" id="QeJ-DA-0za"/>
-                            <constraint firstItem="Wrs-Tj-lbY" firstAttribute="trailing" secondItem="xmp-U6-xjS" secondAttribute="trailing" constant="20" id="cAB-gB-FAb"/>
-                            <constraint firstItem="6Rc-7e-W6e" firstAttribute="leading" secondItem="Wrs-Tj-lbY" secondAttribute="leading" constant="10" id="d92-fG-xdj"/>
-                            <constraint firstItem="6Rc-7e-W6e" firstAttribute="top" secondItem="BnR-Zm-gW2" secondAttribute="bottom" id="es9-2t-s9y"/>
-                            <constraint firstItem="xmp-U6-xjS" firstAttribute="leading" secondItem="Wrs-Tj-lbY" secondAttribute="leading" constant="20" id="gD6-IH-VZd"/>
-                            <constraint firstItem="Wrs-Tj-lbY" firstAttribute="bottom" secondItem="xmp-U6-xjS" secondAttribute="bottom" constant="10" id="glP-bF-ASj"/>
-                            <constraint firstItem="Wrs-Tj-lbY" firstAttribute="trailing" secondItem="6Rc-7e-W6e" secondAttribute="trailing" constant="10" id="jNq-Dc-Vnf"/>
-                            <constraint firstItem="cO7-aS-Ep2" firstAttribute="leading" secondItem="Wrs-Tj-lbY" secondAttribute="leading" constant="20" id="kDp-yg-nue"/>
-                            <constraint firstItem="wv3-D8-B1o" firstAttribute="leading" secondItem="aW2-mW-Rjn" secondAttribute="leading" constant="20" id="kNQ-R5-pVx"/>
-                            <constraint firstItem="BnR-Zm-gW2" firstAttribute="leading" secondItem="Wrs-Tj-lbY" secondAttribute="leading" constant="20" id="lgb-vo-kFe"/>
-                            <constraint firstItem="cO7-aS-Ep2" firstAttribute="top" secondItem="Wrs-Tj-lbY" secondAttribute="top" constant="10" id="qYy-yY-WDi"/>
-                            <constraint firstItem="Wrs-Tj-lbY" firstAttribute="trailing" secondItem="wv3-D8-B1o" secondAttribute="trailing" constant="10" id="sos-gu-c7j"/>
+                            <constraint firstItem="Wrs-Tj-lbY" firstAttribute="bottom" secondItem="Kra-0V-3ky" secondAttribute="bottom" constant="10" id="1iT-yP-BZU"/>
+                            <constraint firstItem="Kra-0V-3ky" firstAttribute="top" secondItem="Wrs-Tj-lbY" secondAttribute="top" constant="10" id="LSB-kL-cfS"/>
+                            <constraint firstItem="Kra-0V-3ky" firstAttribute="leading" secondItem="Wrs-Tj-lbY" secondAttribute="leading" constant="20" id="Vyp-il-9UG"/>
+                            <constraint firstItem="Kra-0V-3ky" firstAttribute="trailing" secondItem="Wrs-Tj-lbY" secondAttribute="trailing" constant="20" id="pQu-9c-I0V"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="pr1-im-sJd"/>
                     <connections>
                         <outlet property="requestButton" destination="cO7-aS-Ep2" id="rIl-Rq-ASb"/>
                         <outlet property="requestTextView" destination="BnR-Zm-gW2" id="gKB-sp-lBc"/>
-                        <outlet property="requestTextViewHeight" destination="qE6-gv-3U4" id="gIn-Sx-NCQ"/>
                         <outlet property="responseButton" destination="wv3-D8-B1o" id="LjW-2f-cPX"/>
                         <outlet property="responseTextView" destination="xmp-U6-xjS" id="NBW-KX-b2C"/>
-                        <outlet property="responseTextViewHeight" destination="d2w-TE-KtB" id="Qv9-Jd-gEM"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Q76-VY-YLM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

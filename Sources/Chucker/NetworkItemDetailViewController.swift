@@ -15,20 +15,27 @@ final class NetworkItemDetailViewController: UIViewController {
     @IBOutlet weak var requestButton: UIButton!
     @IBOutlet weak var responseButton: UIButton!
 
-    @IBOutlet weak var requestTextViewHeight: NSLayoutConstraint!
-    @IBOutlet weak var responseTextViewHeight: NSLayoutConstraint!
+    private var _requestIsOpen: Bool = true
+    private var _responseIsOpen: Bool = true
 
-    private var initialRequestTextViewHeight: CGFloat!
-    private var initialResponseTextViewHeight: CGFloat!
-
-    private var requestIsOpen: Bool = true {
-        didSet {
+    private var requestIsOpen: Bool {
+        get {
+            return _requestIsOpen
+        }
+        set {
+            if !newValue && !responseIsOpen { return }
+            _requestIsOpen = newValue
             updateViewForStateChange(.request)
         }
     }
 
-    private var responseIsOpen: Bool = true {
-        didSet {
+    private var responseIsOpen: Bool {
+        get {
+            return _responseIsOpen
+        }
+        set {
+            if !newValue && !requestIsOpen { return }
+            _responseIsOpen = newValue
             updateViewForStateChange(.response)
         }
     }
@@ -46,13 +53,11 @@ final class NetworkItemDetailViewController: UIViewController {
     }
 
     private func populateRequestTextView() {
-        self.initialRequestTextViewHeight = requestTextViewHeight.constant
         let request = networkListItem.request.request
         requestTextView.attributedText = request.toString()
     }
 
     private func populateResponseTextView() {
-        self.initialResponseTextViewHeight = responseTextViewHeight.constant
         guard let response = networkListItem.response else {
             responseTextView.attributedText = NSMutableAttributedString()
                 .normal("No Data Available")
@@ -65,24 +70,37 @@ final class NetworkItemDetailViewController: UIViewController {
 
     private func updateViewForStateChange(_ change: StateChange) {
         UIView.animate(withDuration: 0.25, animations: {
+            switch (self.requestIsOpen, self.responseIsOpen) {
+            case (true, true):
+                self.requestTextView.isHidden = false
+                self.responseTextView.isHidden = false
+            case (true, false):
+                self.requestTextView.isHidden = false
+                self.responseTextView.isHidden = true
+            case (false, true):
+                self.requestTextView.isHidden = true
+                self.responseTextView.isHidden = false
+            case (false, false):
+                self.requestTextView.isHidden = true
+                self.responseTextView.isHidden = true
+            }
+
             switch change {
             case .request:
                 if self.requestIsOpen {
-                    self.requestTextViewHeight.constant = self.initialRequestTextViewHeight
                     self.requestButton.imageView?.transform = self.requestButton.imageView!.transform.rotated(by: .pi / 2.0)
                 } else {
-                    self.requestTextViewHeight.constant = 0.0
                     self.requestButton.imageView?.transform = self.requestButton.imageView!.transform.rotated(by: (.pi / 2.0) * -1.0)
                 }
             case .response:
                 if self.responseIsOpen {
-                    self.responseTextViewHeight.constant = self.initialResponseTextViewHeight
                     self.responseButton.imageView?.transform = self.responseButton.imageView!.transform.rotated(by: .pi / 2.0)
                 } else {
-                    self.responseTextViewHeight.constant = 0.0
                     self.responseButton.imageView?.transform = self.responseButton.imageView!.transform.rotated(by: (.pi / 2.0) * -1.0)
                 }
             }
+
+            self.view.layoutIfNeeded()
         })
     }
 
