@@ -6,6 +6,7 @@
 //
 
 import Alamofire
+import Apollo
 import Foundation
 
 struct NetworkRequest: Equatable, Hashable {
@@ -30,12 +31,9 @@ final class NetworkTrafficManager {
 
     @Published internal var logItems: [NetworkListItem] = []
 
-    internal var shouldRecord: Bool = false {
+    internal var shouldRecord: Bool {
         didSet {
-            URLSessionDataTask.swizzleResume()
-            URLSession.swizzleDataTaskWithRequestCompletion()
-            SessionDelegate.swizzleURLSessionTaskDidReceiveData()
-            SessionDelegate.swizzleURLSessionTaskDidCompleteWithError()
+            performSwizzling()
         }
     }
 
@@ -49,6 +47,13 @@ final class NetworkTrafficManager {
 
     private init() {
         self.trafficLog = [:]
+
+        if CommandLine.arguments.contains("--chucker-auto-record") {
+            shouldRecord = true
+            performSwizzling()
+        } else {
+            shouldRecord = false
+        }
     }
 
     internal func addRequest(_ request: NetworkRequest) {
@@ -59,5 +64,14 @@ final class NetworkTrafficManager {
     internal func pairResponse(response: NetworkResponse, with request: NetworkRequest) {
         trafficLog[request] = response
         logItems = _trafficItems
+    }
+
+    private func performSwizzling() {
+        URLSessionDataTask.swizzleResume()
+        URLSession.swizzleDataTaskWithRequestCompletion()
+        SessionDelegate.swizzleURLSessionTaskDidReceiveData()
+        SessionDelegate.swizzleURLSessionTaskDidCompleteWithError()
+        URLSessionClient.swizzleURLSessionTaskDidReceiveData()
+        URLSessionClient.swizzleURLSessionTaskDidCompleteWithError()
     }
 }

@@ -17,6 +17,12 @@ extension URLRequest {
 
         if let url = self.url {
             str = str.normal(": \(url.absoluteString)")
+
+            if let params = url.query {
+                str = str
+                    .bold("\nParams:")
+                    .normal(" \(params)")
+            }
         }
 
         str = str
@@ -49,10 +55,15 @@ extension URLRequest {
             do {
                 let json = try JSONSerialization.jsonObject(with: body, options: .allowFragments)
 
-                str = str.bold("\n\nBody:")
-                str = str.normal("\n\(json)")
+                str = str
+                    .bold("\n\nBody:")
+                    .normal("\n\(json)")
             } catch {
-                print(error)
+                if let textBody = String(data: body, encoding: .utf8) {
+                    str = str
+                        .bold("\n\nBody:")
+                        .normal("\n\(textBody)")
+                }
             }
         }
 
