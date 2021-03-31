@@ -48,7 +48,12 @@ final class NetworkTrafficManager {
     private init() {
         self.trafficLog = [:]
 
-        self.shouldRecord = CommandLine.arguments.contains("--chucker-auto-record")
+        if CommandLine.arguments.contains("--chucker-auto-record") {
+            shouldRecord = true
+            performSwizzling()
+        } else {
+            shouldRecord = false
+        }
     }
 
     internal func addRequest(_ request: NetworkRequest) {
