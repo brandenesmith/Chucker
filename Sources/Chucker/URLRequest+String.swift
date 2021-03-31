@@ -55,10 +55,15 @@ extension URLRequest {
             do {
                 let json = try JSONSerialization.jsonObject(with: body, options: .allowFragments)
 
-                str = str.bold("\n\nBody:")
-                str = str.normal("\n\(json)")
+                str = str
+                    .bold("\n\nBody:")
+                    .normal("\n\(json)")
             } catch {
-                print(error)
+                if let textBody = String(data: body, encoding: .utf8) {
+                    str = str
+                        .bold("\n\nBody:")
+                        .normal("\n\(textBody)")
+                }
             }
         }
 
