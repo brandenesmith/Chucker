@@ -31,14 +31,9 @@ final class NetworkTrafficManager {
 
     @Published internal var logItems: [NetworkListItem] = []
 
-    internal var shouldRecord: Bool = false {
+    internal var shouldRecord: Bool {
         didSet {
-            URLSessionDataTask.swizzleResume()
-            URLSession.swizzleDataTaskWithRequestCompletion()
-            SessionDelegate.swizzleURLSessionTaskDidReceiveData()
-            SessionDelegate.swizzleURLSessionTaskDidCompleteWithError()
-            URLSessionClient.swizzleURLSessionTaskDidReceiveData()
-            URLSessionClient.swizzleURLSessionTaskDidCompleteWithError()
+            performSwizzling()
         }
     }
 
@@ -52,6 +47,8 @@ final class NetworkTrafficManager {
 
     private init() {
         self.trafficLog = [:]
+
+        self.shouldRecord = CommandLine.arguments.contains("--chucker-auto-record")
     }
 
     internal func addRequest(_ request: NetworkRequest) {
@@ -62,5 +59,14 @@ final class NetworkTrafficManager {
     internal func pairResponse(response: NetworkResponse, with request: NetworkRequest) {
         trafficLog[request] = response
         logItems = _trafficItems
+    }
+
+    private func performSwizzling() {
+        URLSessionDataTask.swizzleResume()
+        URLSession.swizzleDataTaskWithRequestCompletion()
+        SessionDelegate.swizzleURLSessionTaskDidReceiveData()
+        SessionDelegate.swizzleURLSessionTaskDidCompleteWithError()
+        URLSessionClient.swizzleURLSessionTaskDidReceiveData()
+        URLSessionClient.swizzleURLSessionTaskDidCompleteWithError()
     }
 }
