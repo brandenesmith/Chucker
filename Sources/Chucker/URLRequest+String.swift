@@ -17,6 +17,12 @@ extension URLRequest {
 
         if let url = self.url {
             str = str.normal(": \(url.absoluteString)")
+
+            if let params = url.query {
+                str = str
+                    .bold("\nParams:")
+                    .normal(" \(params)")
+            }
         }
 
         str = str
