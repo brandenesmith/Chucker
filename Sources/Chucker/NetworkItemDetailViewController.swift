@@ -69,22 +69,22 @@ final class NetworkItemDetailViewController: UIViewController {
     }
 
     private func updateViewForStateChange(_ change: StateChange) {
+        switch (self.requestIsOpen, self.responseIsOpen) {
+        case (true, true):
+            self.requestTextView.isHidden = false
+            self.responseTextView.isHidden = false
+        case (true, false):
+            self.requestTextView.isHidden = false
+            self.responseTextView.isHidden = true
+        case (false, true):
+            self.requestTextView.isHidden = true
+            self.responseTextView.isHidden = false
+        case (false, false):
+            self.requestTextView.isHidden = true
+            self.responseTextView.isHidden = true
+        }
+        
         UIView.animate(withDuration: 0.25, animations: {
-            switch (self.requestIsOpen, self.responseIsOpen) {
-            case (true, true):
-                self.requestTextView.isHidden = false
-                self.responseTextView.isHidden = false
-            case (true, false):
-                self.requestTextView.isHidden = false
-                self.responseTextView.isHidden = true
-            case (false, true):
-                self.requestTextView.isHidden = true
-                self.responseTextView.isHidden = false
-            case (false, false):
-                self.requestTextView.isHidden = true
-                self.responseTextView.isHidden = true
-            }
-
             switch change {
             case .request:
                 if self.requestIsOpen {

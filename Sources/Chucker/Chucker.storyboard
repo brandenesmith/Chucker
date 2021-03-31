@@ -101,7 +101,7 @@
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Rc-7e-W6e">
-                                        <rect key="frame" x="0.0" y="395.5" width="414" height="2"/>
+                                        <rect key="frame" x="0.0" y="395.5" width="366" height="2"/>
                                         <color key="backgroundColor" systemColor="labelColor"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="2" id="UDy-GO-TcQ"/>
@@ -130,6 +130,7 @@
                                     <constraint firstItem="BnR-Zm-gW2" firstAttribute="height" relation="greaterThanOrEqual" secondItem="Kra-0V-3ky" secondAttribute="height" multiplier="0.448604" id="LoS-L3-6UN"/>
                                     <constraint firstItem="BnR-Zm-gW2" firstAttribute="height" secondItem="xmp-U6-xjS" secondAttribute="height" multiplier="1.01435" id="NGY-Yp-Fit"/>
                                     <constraint firstItem="xmp-U6-xjS" firstAttribute="width" secondItem="Kra-0V-3ky" secondAttribute="width" id="NxB-LI-4gj"/>
+                                    <constraint firstItem="6Rc-7e-W6e" firstAttribute="width" secondItem="Kra-0V-3ky" secondAttribute="width" multiplier="0.884058" id="Sk5-Mc-73l"/>
                                     <constraint firstItem="BnR-Zm-gW2" firstAttribute="width" secondItem="Kra-0V-3ky" secondAttribute="width" multiplier="0.884058" id="utv-HB-IZ9"/>
                                 </constraints>
                             </stackView>
