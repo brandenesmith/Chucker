@@ -128,6 +128,7 @@ final class FakeURLSessionTask: URLSessionDataTask {
                 willCacheResponse: CachedURLResponse(response: response, data: data!),
                 completionHandler: { cachedResponse in }
             )
+            (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, task: self, didCompleteWithError: nil)
         }
     }
 
