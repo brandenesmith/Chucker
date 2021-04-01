@@ -97,6 +97,10 @@ final class FakeURLSessionTask: URLSessionDataTask {
         return _originalRequest
     }
 
+    override var state: URLSessionTask.State {
+        return super.state
+    }
+
     init(request: URLRequest, session: URLSession, mockPath: String) {
         self.session = session
         self.mockPath = mockPath
