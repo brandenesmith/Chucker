@@ -91,9 +91,15 @@ final class FakeURLSessionTask: URLSessionDataTask {
 
     private weak var session: URLSession?
     private let mockPath: String
+    private let _originalRequest: URLRequest
+
+    override var originalRequest: URLRequest? {
+        return _originalRequest
+    }
 
     init(request: URLRequest, session: URLSession, mockPath: String) {
         self.session = session
         self.mockPath = mockPath
+        self._originalRequest = request
     }
 }
