@@ -87,7 +87,16 @@ final class FakeURLSessionTask: URLSessionDataTask {
         """.data(using: .utf8)
 
         let numberOfBytesExpectedToSend = Int64(_originalRequest.httpBody?.count ?? 0)
+        let session = self.session!
+        let sessionDelegate = session.delegate as! URLSessionDataDelegate
+        let sessionDelegateResponds = sessionDelegate.responds(
+            to: #selector(URLSessionDataDelegate.urlSession(_:task:didSendBodyData:totalBytesSent:totalBytesExpectedToSend:))
+        )
 
+        if !sessionDelegateResponds {
+            fatalError()
+        }
+        
         (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
             self.session!,
             task: self,
