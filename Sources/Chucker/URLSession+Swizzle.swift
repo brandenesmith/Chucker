@@ -86,19 +86,37 @@ final class FakeURLSessionTask: URLSessionDataTask {
                             ]
         """.data(using: .utf8)
 
+        let numberOfBytesExpectedToSend = Int64(_originalRequest.httpBody?.count ?? 0)
+
+        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
+            self.session!,
+            task: self,
+            didSendBodyData: numberOfBytesExpectedToSend,
+            totalBytesSent: numberOfBytesExpectedToSend,
+            totalBytesExpectedToSend: numberOfBytesExpectedToSend
+        )
+
+        let response = HTTPURLResponse(
+            url: self._originalRequest.url!,
+            statusCode: 200,
+            httpVersion: nil,
+            headerFields: nil
+        )!
+
         (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
             self.session!,
             dataTask: self,
-            didReceive: HTTPURLResponse(
-                url: self._originalRequest.url!,
-                statusCode: 200,
-                httpVersion: nil,
-                headerFields: nil
-            )!,
+            didReceive: response,
             completionHandler: { (responseDisposition) in }
         )
-        
+
         (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, dataTask: self, didReceive: data!)
+        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
+            self.session!,
+            dataTask: self,
+            willCacheResponse: CachedURLResponse(response: response, data: data!),
+            completionHandler: { cachedResponse in }
+        )
     }
 
     private weak var session: URLSession?
