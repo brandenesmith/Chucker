@@ -89,15 +89,15 @@ final class FakeURLSessionTask: URLSessionDataTask {
         (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
             self.session!,
             dataTask: self,
-            didReceive: URLResponse(
-                url: _originalRequest.url!,
-                mimeType: nil,
-                expectedContentLength: 2048,
-                textEncodingName: "utf-8"
-            ),
+            didReceive: HTTPURLResponse(
+                url: self._originalRequest.url!,
+                statusCode: 200,
+                httpVersion: nil,
+                headerFields: nil
+            )!,
             completionHandler: { (responseDisposition) in }
         )
-
+        
         (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, dataTask: self, didReceive: data!)
     }
 
