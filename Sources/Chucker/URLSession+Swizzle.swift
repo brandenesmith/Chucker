@@ -95,10 +95,10 @@ final class FakeURLSessionTask: URLSessionDataTask {
                 expectedContentLength: 2048,
                 textEncodingName: "utf-8"
             ),
-            completionHandler: { (responseDisposition) in
-                (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, dataTask: self, didReceive: data!)
-            }
+            completionHandler: { (responseDisposition) in }
         )
+
+        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, dataTask: self, didReceive: data!)
     }
 
     private weak var session: URLSession?
