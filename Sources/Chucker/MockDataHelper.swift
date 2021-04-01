@@ -16,8 +16,8 @@ final class MockDataHelper {
         let seperatedQuery = query.split(separator: "&").map({ String($0) })
 
         seperatedQuery.forEach({ param in
-            let pair = param.split(separator: "=")
-            dict[String(pair[0])] = pair[1]
+            let pair = param.split(separator: "=").map({ String($0) })
+            dict[pair[0]] = pair[1]
         })
 
         return dict
