@@ -5,6 +5,7 @@
 //  Created by Branden Smith on 3/29/21.
 //
 
+import Alamofire
 import Foundation
 
 extension URLSession {
@@ -96,36 +97,38 @@ final class FakeURLSessionTask: URLSessionDataTask {
         if !sessionDelegateResponds {
             fatalError()
         }
-        
-        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
-            self.session!,
-            task: self,
-            didSendBodyData: numberOfBytesExpectedToSend,
-            totalBytesSent: numberOfBytesExpectedToSend,
-            totalBytesExpectedToSend: numberOfBytesExpectedToSend
-        )
 
-        let response = HTTPURLResponse(
-            url: self._originalRequest.url!,
-            statusCode: 200,
-            httpVersion: nil,
-            headerFields: nil
-        )!
+        Alamofire.Session.default.rootQueue.async {
+            (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
+                self.session!,
+                task: self,
+                didSendBodyData: numberOfBytesExpectedToSend,
+                totalBytesSent: numberOfBytesExpectedToSend,
+                totalBytesExpectedToSend: numberOfBytesExpectedToSend
+            )
 
-        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
-            self.session!,
-            dataTask: self,
-            didReceive: response,
-            completionHandler: { (responseDisposition) in }
-        )
+            let response = HTTPURLResponse(
+                url: self._originalRequest.url!,
+                statusCode: 200,
+                httpVersion: nil,
+                headerFields: nil
+            )!
 
-        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, dataTask: self, didReceive: data!)
-        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
-            self.session!,
-            dataTask: self,
-            willCacheResponse: CachedURLResponse(response: response, data: data!),
-            completionHandler: { cachedResponse in }
-        )
+            (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
+                self.session!,
+                dataTask: self,
+                didReceive: response,
+                completionHandler: { (responseDisposition) in }
+            )
+
+            (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, dataTask: self, didReceive: data!)
+            (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
+                self.session!,
+                dataTask: self,
+                willCacheResponse: CachedURLResponse(response: response, data: data!),
+                completionHandler: { cachedResponse in }
+            )
+        }
     }
 
     private weak var session: URLSession?
