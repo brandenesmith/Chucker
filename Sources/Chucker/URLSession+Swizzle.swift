@@ -63,6 +63,7 @@ extension URLSession {
 
 final class FakeURLSessionTask: URLSessionDataTask {
     override func resume() {
+        let start = Date()
         let data = """
                     [
                                 {
@@ -129,6 +130,15 @@ final class FakeURLSessionTask: URLSessionDataTask {
                 completionHandler: { cachedResponse in }
             )
             (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, task: self, didCompleteWithError: nil)
+
+            let end = Date()
+
+            let metrics = FakeURLSessionTaskMetrics(
+                taskInterval: DateInterval(start: start, duration: end.timeIntervalSince(start)),
+                redirectCount: 0
+            )
+
+            (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, task: self, didFinishCollecting: metrics)
         }
     }
 
@@ -148,5 +158,23 @@ final class FakeURLSessionTask: URLSessionDataTask {
         self.session = session
         self.mockPath = mockPath
         self._originalRequest = request
+    }
+}
+
+final class FakeURLSessionTaskMetrics: URLSessionTaskMetrics {
+    private let _fakeInterval: DateInterval
+    private let _fakeRedirectCount: Int
+
+    override var taskInterval: DateInterval {
+        return _fakeInterval
+    }
+
+    override var redirectCount: Int {
+        return _fakeRedirectCount
+    }
+
+    init(taskInterval: DateInterval, redirectCount: Int) {
+        self._fakeInterval = taskInterval
+        self._fakeRedirectCount = redirectCount
     }
 }
