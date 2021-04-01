@@ -33,4 +33,67 @@ extension URLSession {
 
         return swizzledDataTask(with: request, completionHandler: replacedCompletion)
     }
+
+    static func swizzleDataTaskWithRequest() {
+        method_exchangeImplementations(
+            class_getInstanceMethod(
+                URLSession.self,
+                #selector(URLSession.dataTask(with:) as (URLSession) -> (URLRequest) -> URLSessionDataTask)
+            )!,
+            class_getInstanceMethod(URLSession.self, #selector(swizzledDataTask(with:)))!
+        )
+    }
+
+    @objc func swizzledDataTask(with request: URLRequest) -> URLSessionDataTask {
+        if let queryParams = MockDataHelper.parseParams(from: request.url?.query),
+           queryParams.contains(where: { (key, _) in key == "mockData" }) {
+            let fakeTask = FakeURLSessionTask(
+                request: request,
+                session: self,
+                mockPath: queryParams["mockData"] as! String
+            )
+
+            return fakeTask
+        }
+
+        return swizzledDataTask(with: request)
+    }
+}
+
+final class FakeURLSessionTask: URLSessionDataTask {
+    override func resume() {
+        let data = """
+                    [
+                                {
+                                    "question": "Test Question Fool",
+                                    "published_at": "2015-08-05T08:40:51.620Z",
+                                    "choices": [
+                                        {
+                                            "choice": "Test 1",
+                                            "votes": 2048
+                                        }, {
+                                            "choice": "Test 2",
+                                            "votes": 1024
+                                        }, {
+                                            "choice": "Test 3",
+                                            "votes": 512
+                                        }, {
+                                            "choice": "Test 4",
+                                            "votes": 256
+                                        }
+                                    ]
+                                }
+                            ]
+        """.data(using: .utf8)
+
+        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, dataTask: self, didReceive: data!)
+    }
+
+    private weak var session: URLSession?
+    private let mockPath: String
+
+    init(request: URLRequest, session: URLSession, mockPath: String) {
+        self.session = session
+        self.mockPath = mockPath
+    }
 }

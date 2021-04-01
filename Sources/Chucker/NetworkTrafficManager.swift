@@ -69,6 +69,7 @@ final class NetworkTrafficManager {
     private func performSwizzling() {
         URLSessionDataTask.swizzleResume()
         URLSession.swizzleDataTaskWithRequestCompletion()
+        URLSession.swizzleDataTaskWithRequest()
         SessionDelegate.swizzleURLSessionTaskDidReceiveData()
         SessionDelegate.swizzleURLSessionTaskDidCompleteWithError()
         URLSessionClient.swizzleURLSessionTaskDidReceiveData()
