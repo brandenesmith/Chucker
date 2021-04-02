@@ -69,7 +69,7 @@ extension SessionDelegate {
             )!,
             class_getInstanceMethod(
                 SessionDelegate.self,
-                #selector(SessionDelegate.swizzledURLSessionWillCacheResponse(_:dataTask:willCacheResponse:completionHandler:))
+                #selector(SessionDelegate.swizzledURLSessionTaskFinishedCollectingMetrics(_:task:didFinishCollecting:))
             )!
         )
     }
