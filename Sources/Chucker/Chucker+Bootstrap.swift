@@ -7,6 +7,10 @@
 
 import Foundation
 
-public func bootstrap() {
+public func bootstrap(mockDataManifest: String? = nil, mockDataBundle: Bundle? = nil) {
     _ = networkTrafficManager
+
+    if let mockDataManifest = mockDataManifest {
+        networkTrafficManager.mockDataManager = MockDataManager(manifest: mockDataManifest, bundle: mockDataBundle ?? .main)
+    }
 }

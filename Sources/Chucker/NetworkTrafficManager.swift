@@ -30,6 +30,7 @@ final class NetworkTrafficManager {
     internal static let shared = NetworkTrafficManager()
 
     @Published internal var logItems: [NetworkListItem] = []
+    internal var mockDataManager: MockDataManager?
 
     internal var shouldRecord: Bool {
         didSet {

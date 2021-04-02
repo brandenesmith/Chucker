@@ -88,23 +88,13 @@ final class FakeURLSessionTask: URLSessionDataTask {
                             ]
         """.data(using: .utf8)
 
-        let numberOfBytesExpectedToSend = Int64(_originalRequest.httpBody?.count ?? 0)
-        let session = self.session!
-        let sessionDelegate = session.delegate as! URLSessionDataDelegate
-        let sessionDelegateResponds = sessionDelegate.responds(
-            to: #selector(URLSessionDataDelegate.urlSession(_:task:didSendBodyData:totalBytesSent:totalBytesExpectedToSend:))
-        )
-
-        if !sessionDelegateResponds {
-            fatalError()
-        }
-
+        let bytesToSend = Int64(_originalRequest.httpBody?.count ?? 0)
         (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
             self.session!,
             task: self,
-            didSendBodyData: numberOfBytesExpectedToSend,
-            totalBytesSent: numberOfBytesExpectedToSend,
-            totalBytesExpectedToSend: numberOfBytesExpectedToSend
+            didSendBodyData: bytesToSend,
+            totalBytesSent: bytesToSend,
+            totalBytesExpectedToSend: bytesToSend
         )
 
         let response = HTTPURLResponse(
@@ -113,7 +103,6 @@ final class FakeURLSessionTask: URLSessionDataTask {
             httpVersion: nil,
             headerFields: nil
         )!
-
         (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
             self.session!,
             dataTask: self,
@@ -122,22 +111,24 @@ final class FakeURLSessionTask: URLSessionDataTask {
         )
 
         (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, dataTask: self, didReceive: data!)
+
         (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
             self.session!,
             dataTask: self,
             willCacheResponse: CachedURLResponse(response: response, data: data!),
             completionHandler: { cachedResponse in }
         )
+
         (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, task: self, didCompleteWithError: nil)
 
-        let end = Date()
-
-        let metrics = FakeURLSessionTaskMetrics(
-            taskInterval: DateInterval(start: start, duration: end.timeIntervalSince(start)),
-            redirectCount: 0
+        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
+            self.session!,
+            task: self,
+            didFinishCollecting: FakeURLSessionTaskMetrics(
+                taskInterval: DateInterval(start: start, duration: Date().timeIntervalSince(start)),
+                redirectCount: 0
+            )
         )
-
-        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, task: self, didFinishCollecting: metrics)
     }
 
     private weak var session: URLSession?
