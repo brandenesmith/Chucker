@@ -64,29 +64,7 @@ extension URLSession {
 final class FakeURLSessionTask: URLSessionDataTask {
     override func resume() {
         let start = Date()
-        let data = """
-                    [
-                                {
-                                    "question": "Test Question Fool",
-                                    "published_at": "2015-08-05T08:40:51.620Z",
-                                    "choices": [
-                                        {
-                                            "choice": "Test 1",
-                                            "votes": 2048
-                                        }, {
-                                            "choice": "Test 2",
-                                            "votes": 1024
-                                        }, {
-                                            "choice": "Test 3",
-                                            "votes": 512
-                                        }, {
-                                            "choice": "Test 4",
-                                            "votes": 256
-                                        }
-                                    ]
-                                }
-                            ]
-        """.data(using: .utf8)
+        let mockResponse = try! networkTrafficManager.mockDataManager!.mockResponse(for: _originalRequest.url!.absoluteString)
 
         let bytesToSend = Int64(_originalRequest.httpBody?.count ?? 0)
         (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
@@ -98,10 +76,10 @@ final class FakeURLSessionTask: URLSessionDataTask {
         )
 
         let response = HTTPURLResponse(
-            url: self._originalRequest.url!,
-            statusCode: 200,
-            httpVersion: nil,
-            headerFields: nil
+            url: URL(string: mockResponse.url)!,
+            statusCode: mockResponse.statusCode,
+            httpVersion: mockResponse.httpVersion,
+            headerFields: mockResponse.headerFields
         )!
         (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
             self.session!,
@@ -110,14 +88,15 @@ final class FakeURLSessionTask: URLSessionDataTask {
             completionHandler: { (responseDisposition) in }
         )
 
-        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, dataTask: self, didReceive: data!)
-
-        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
-            self.session!,
-            dataTask: self,
-            willCacheResponse: CachedURLResponse(response: response, data: data!),
-            completionHandler: { cachedResponse in }
-        )
+        if let data = mockResponse.body {
+            (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, dataTask: self, didReceive: data)
+            (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
+                self.session!,
+                dataTask: self,
+                willCacheResponse: CachedURLResponse(response: response, data: data),
+                completionHandler: { cachedResponse in }
+            )
+        }
 
         (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, task: self, didCompleteWithError: nil)
 
