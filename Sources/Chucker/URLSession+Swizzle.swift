@@ -65,7 +65,7 @@ final class FakeURLSessionTask: URLSessionDataTask {
     override func resume() {
         let start = Date()
         let mockResponse = try! networkTrafficManager.mockDataManager!.mockResponse(
-            for: _originalRequest.url!.absoluteString.replacingOccurrences(of: _originalRequest.url!.query ?? "", with: "")
+            for: _originalRequest.url!.absoluteString.components(separatedBy: "?")[0]
         )
 
         let bytesToSend = Int64(_originalRequest.httpBody?.count ?? 0)
