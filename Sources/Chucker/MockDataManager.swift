@@ -17,18 +17,18 @@ final class MockDataManager {
     private let manifest: String
     private let bundle: Bundle
 
-    private var workingManifest: [String: String]!
+    private var workingManifest: [String: [String: String]]!
 
     init(manifest: String, bundle: Bundle) {
         self.manifest = manifest
         self.bundle = bundle
 
-        self.workingManifest = (try! json(for: manifest, in: bundle) as! [String: String])
+        self.workingManifest = (try! json(for: manifest, in: bundle) as! [String: [String: String]])
     }
 
 
-    func mockResponse(for url: String) throws -> MockResponse {
-        return try! JSONDecoder().decode(MockResponse.self, from: try! data(for: workingManifest[url]!, in: bundle))
+    func mockResponse(for url: String, type: String = "success") throws -> MockResponse {
+        return try! JSONDecoder().decode(MockResponse.self, from: try! data(for: workingManifest[url]![type]!, in: bundle))
     }
 
     private func data(for filename: String, in bundle: Bundle) throws -> Data {
