@@ -99,47 +99,45 @@ final class FakeURLSessionTask: URLSessionDataTask {
             fatalError()
         }
 
-        Alamofire.Session.default.rootQueue.async {
-            (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
-                self.session!,
-                task: self,
-                didSendBodyData: numberOfBytesExpectedToSend,
-                totalBytesSent: numberOfBytesExpectedToSend,
-                totalBytesExpectedToSend: numberOfBytesExpectedToSend
-            )
+        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
+            self.session!,
+            task: self,
+            didSendBodyData: numberOfBytesExpectedToSend,
+            totalBytesSent: numberOfBytesExpectedToSend,
+            totalBytesExpectedToSend: numberOfBytesExpectedToSend
+        )
 
-            let response = HTTPURLResponse(
-                url: self._originalRequest.url!,
-                statusCode: 200,
-                httpVersion: nil,
-                headerFields: nil
-            )!
+        let response = HTTPURLResponse(
+            url: self._originalRequest.url!,
+            statusCode: 200,
+            httpVersion: nil,
+            headerFields: nil
+        )!
 
-            (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
-                self.session!,
-                dataTask: self,
-                didReceive: response,
-                completionHandler: { (responseDisposition) in }
-            )
+        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
+            self.session!,
+            dataTask: self,
+            didReceive: response,
+            completionHandler: { (responseDisposition) in }
+        )
 
-            (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, dataTask: self, didReceive: data!)
-            (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
-                self.session!,
-                dataTask: self,
-                willCacheResponse: CachedURLResponse(response: response, data: data!),
-                completionHandler: { cachedResponse in }
-            )
-            (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, task: self, didCompleteWithError: nil)
+        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, dataTask: self, didReceive: data!)
+        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
+            self.session!,
+            dataTask: self,
+            willCacheResponse: CachedURLResponse(response: response, data: data!),
+            completionHandler: { cachedResponse in }
+        )
+        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, task: self, didCompleteWithError: nil)
 
-            let end = Date()
+        let end = Date()
 
-            let metrics = FakeURLSessionTaskMetrics(
-                taskInterval: DateInterval(start: start, duration: end.timeIntervalSince(start)),
-                redirectCount: 0
-            )
+        let metrics = FakeURLSessionTaskMetrics(
+            taskInterval: DateInterval(start: start, duration: end.timeIntervalSince(start)),
+            redirectCount: 0
+        )
 
-            (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, task: self, didFinishCollecting: metrics)
-        }
+        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, task: self, didFinishCollecting: metrics)
     }
 
     private weak var session: URLSession?

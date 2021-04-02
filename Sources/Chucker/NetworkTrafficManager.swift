@@ -72,6 +72,9 @@ final class NetworkTrafficManager {
         URLSession.swizzleDataTaskWithRequest()
         SessionDelegate.swizzleURLSessionTaskDidReceiveData()
         SessionDelegate.swizzleURLSessionTaskDidCompleteWithError()
+        SessionDelegate.swizzleURLSessionTaskDidSendBodyData()
+        SessionDelegate.swizzleURLSessionWillCacheResponse()
+        SessionDelegate.swizzleURLSessionTaskFinishedCollectingMetrics()
         URLSessionClient.swizzleURLSessionTaskDidReceiveData()
         URLSessionClient.swizzleURLSessionTaskDidCompleteWithError()
     }
