@@ -28,7 +28,7 @@ final class MockDataManager {
 
 
     func mockResponse(for url: String, type: String = "success") throws -> MockResponse {
-        return try! JSONDecoder().decode(MockResponse.self, from: try! data(for: workingManifest[url]![type]!, in: bundle))
+        return MockResponseDecoder().decodeMockResponse(from: try! data(for: workingManifest[url]![type]!, in: bundle))
     }
 
     private func data(for filename: String, in bundle: Bundle) throws -> Data {
