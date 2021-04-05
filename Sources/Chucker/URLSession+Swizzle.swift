@@ -51,7 +51,7 @@ extension URLSession {
             let fakeTask = FakeURLSessionTask(
                 request: request,
                 session: self,
-                mockPath: queryParams["mockData"] as! String
+                mockType: queryParams["mockData"] as! String
             )
 
             return fakeTask
@@ -65,7 +65,8 @@ final class FakeURLSessionTask: URLSessionDataTask {
     override func resume() {
         let start = Date()
         let mockResponse = try! networkTrafficManager.mockDataManager!.mockResponse(
-            for: _originalRequest.url!.absoluteString.components(separatedBy: "?")[0]
+            for: _originalRequest.url!.absoluteString.components(separatedBy: "?")[0],
+            type: mockType
         )
 
         let bytesToSend = Int64(_originalRequest.httpBody?.count ?? 0)
@@ -113,7 +114,7 @@ final class FakeURLSessionTask: URLSessionDataTask {
     }
 
     private weak var session: URLSession?
-    private let mockPath: String
+    private let mockType: String
     private let _originalRequest: URLRequest
 
     override var originalRequest: URLRequest? {
@@ -124,9 +125,9 @@ final class FakeURLSessionTask: URLSessionDataTask {
         return super.state
     }
 
-    init(request: URLRequest, session: URLSession, mockPath: String) {
+    init(request: URLRequest, session: URLSession, mockType: String) {
         self.session = session
-        self.mockPath = mockPath
+        self.mockType = mockType
         self._originalRequest = request
     }
 }
