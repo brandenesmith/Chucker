@@ -47,11 +47,11 @@ extension URLSession {
 
     @objc func swizzledDataTask(with request: URLRequest) -> URLSessionDataTask {
         if let queryParams = MockDataHelper.parseParams(from: request.url?.query),
-           (queryParams["mockData"] as? Bool) ?? false {
+           let useMockData = queryParams["mockData"] as? Bool,
+           useMockData {
             let shouldMock = try? networkTrafficManager
                 .mockDataManager?
                 .shouldMockResponse(for: request.url!.absoluteString.components(separatedBy: "?")[0])
-
             if shouldMock ?? false {
                 let fakeTask = FakeURLSessionTask(
                     request: request,
