@@ -14,21 +14,36 @@ final class MockDataManager {
         case dataIsNotParsableJSON
     }
 
+    private let config: String
     private let manifest: String
     private let bundle: Bundle
 
-    private var workingManifest: [String: [String: String]]!
+    private var workingManifest: MockDataManifest!
+    private var workingConfig: MockDataConfig!
 
-    init(manifest: String, bundle: Bundle) {
+    init(config: String, manifest: String, bundle: Bundle) {
+        self.config = config
         self.manifest = manifest
         self.bundle = bundle
 
-        self.workingManifest = (try! json(for: manifest, in: bundle) as! [String: [String: String]])
+        self.workingConfig = try! JSONDecoder().decode(MockDataConfig.self, from: try! data(for: config, in: bundle))
+        self.workingManifest = try! JSONDecoder().decode(MockDataManifest.self, from: try! data(for: manifest, in: bundle))
     }
 
+    func shouldMockResponse(for url: String) throws -> Bool {
+        return workingConfig.items[url]!.useMock
+    }
 
-    func mockResponse(for url: String, type: String = "success") throws -> MockResponse {
-        return MockResponseDecoder().decodeMockResponse(from: try! data(for: workingManifest[url]![type]!, in: bundle))
+    func mockResponse(for url: String) throws -> MockResponse {
+        return MockResponseDecoder()
+            .decodeMockResponse(
+                from: try! data(
+                    for: workingManifest.items[url]!.value(
+                        for: workingConfig.items[url]!.type
+                    ),
+                    in: bundle
+                )
+            )
     }
 
     private func data(for filename: String, in bundle: Bundle) throws -> Data {

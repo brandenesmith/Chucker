@@ -7,10 +7,14 @@
 
 import Foundation
 
-public func bootstrap(mockDataManifest: String? = nil, mockDataBundle: Bundle? = nil) {
+public func bootstrap(configFilename: String?, mockDataManifest: String? = nil, mockDataBundle: Bundle? = nil) {
     _ = networkTrafficManager
 
-    if let mockDataManifest = mockDataManifest {
-        networkTrafficManager.mockDataManager = MockDataManager(manifest: mockDataManifest, bundle: mockDataBundle ?? .main)
+    if let config = configFilename, let mockDataManifest = mockDataManifest {
+        networkTrafficManager.mockDataManager = MockDataManager(
+            config: config,
+            manifest: mockDataManifest,
+            bundle: mockDataBundle ?? .main
+        )
     }
 }

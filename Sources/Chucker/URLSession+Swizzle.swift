@@ -47,14 +47,19 @@ extension URLSession {
 
     @objc func swizzledDataTask(with request: URLRequest) -> URLSessionDataTask {
         if let queryParams = MockDataHelper.parseParams(from: request.url?.query),
-           queryParams.contains(where: { (key, _) in key == "mockData" }) {
-            let fakeTask = FakeURLSessionTask(
-                request: request,
-                session: self,
-                mockType: queryParams["mockData"] as! String
-            )
+           (queryParams["mockData"] as? Bool) ?? false {
+            let shouldMock = try? networkTrafficManager
+                .mockDataManager?
+                .shouldMockResponse(for: request.url!.absoluteString.components(separatedBy: "?")[0])
 
-            return fakeTask
+            if shouldMock ?? false {
+                let fakeTask = FakeURLSessionTask(
+                    request: request,
+                    session: self
+                )
+
+                return fakeTask
+            }
         }
 
         return swizzledDataTask(with: request)
@@ -65,8 +70,7 @@ final class FakeURLSessionTask: URLSessionDataTask {
     override func resume() {
         let start = Date()
         let mockResponse = try! networkTrafficManager.mockDataManager!.mockResponse(
-            for: _originalRequest.url!.absoluteString.components(separatedBy: "?")[0],
-            type: mockType
+            for: _originalRequest.url!.absoluteString.components(separatedBy: "?")[0]
         )
 
         let bytesToSend = Int64(_originalRequest.httpBody?.count ?? 0)
@@ -115,7 +119,6 @@ final class FakeURLSessionTask: URLSessionDataTask {
     }
 
     private weak var session: URLSession?
-    private let mockType: String
     private let _originalRequest: URLRequest
     private var _response: HTTPURLResponse?
 
@@ -131,9 +134,8 @@ final class FakeURLSessionTask: URLSessionDataTask {
         return _response
     }
 
-    init(request: URLRequest, session: URLSession, mockType: String) {
+    init(request: URLRequest, session: URLSession) {
         self.session = session
-        self.mockType = mockType
         self._originalRequest = request
     }
 }
