@@ -78,16 +78,17 @@ final class FakeURLSessionTask: URLSessionDataTask {
             totalBytesExpectedToSend: bytesToSend
         )
 
-        let response = HTTPURLResponse(
+        self._response = HTTPURLResponse(
             url: URL(string: mockResponse.url)!,
             statusCode: mockResponse.statusCode,
             httpVersion: mockResponse.httpVersion,
             headerFields: mockResponse.headerFields
         )!
+
         (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
             self.session!,
             dataTask: self,
-            didReceive: response,
+            didReceive: self.response!,
             completionHandler: { (responseDisposition) in }
         )
 
@@ -96,7 +97,7 @@ final class FakeURLSessionTask: URLSessionDataTask {
             (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
                 self.session!,
                 dataTask: self,
-                willCacheResponse: CachedURLResponse(response: response, data: data),
+                willCacheResponse: CachedURLResponse(response: self.response!, data: data),
                 completionHandler: { cachedResponse in }
             )
         }
@@ -116,6 +117,7 @@ final class FakeURLSessionTask: URLSessionDataTask {
     private weak var session: URLSession?
     private let mockType: String
     private let _originalRequest: URLRequest
+    private var _response: HTTPURLResponse?
 
     override var originalRequest: URLRequest? {
         return _originalRequest
@@ -123,6 +125,10 @@ final class FakeURLSessionTask: URLSessionDataTask {
 
     override var state: URLSessionTask.State {
         return super.state
+    }
+
+    override var response: URLResponse? {
+        return _response
     }
 
     init(request: URLRequest, session: URLSession, mockType: String) {
