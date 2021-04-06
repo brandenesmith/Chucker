@@ -40,27 +40,52 @@
                                 </subviews>
                             </stackView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="are-jT-0tT">
-                                <rect key="frame" x="0.0" y="105" width="414" height="757"/>
+                                <rect key="frame" x="0.0" y="146" width="414" height="716"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <connections>
                                     <outlet property="dataSource" destination="yTF-Vf-PJO" id="gW1-gG-Aoa"/>
                                     <outlet property="delegate" destination="yTF-Vf-PJO" id="1Cr-br-Exe"/>
                                 </connections>
                             </tableView>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="nol-sv-2ru">
+                                <rect key="frame" x="20" y="105" width="374" height="31"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Azz-iU-7db">
+                                        <rect key="frame" x="0.0" y="0.0" width="104.5" height="31"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enable Response Mocking" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ypu-Nv-JKy">
+                                        <rect key="frame" x="114.5" y="0.0" width="200.5" height="31"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BLq-6B-IBg">
+                                        <rect key="frame" x="325" y="0.0" width="51" height="31"/>
+                                        <connections>
+                                            <action selector="mockDataSwitchValueChanged:" destination="yTF-Vf-PJO" eventType="valueChanged" id="33Q-DR-hgk"/>
+                                        </connections>
+                                    </switch>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="cKb-64-cfq"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="KkC-G5-Yae" firstAttribute="leading" secondItem="cKb-64-cfq" secondAttribute="leading" constant="20" id="0RQ-W1-vhO"/>
+                            <constraint firstItem="cKb-64-cfq" firstAttribute="trailing" secondItem="nol-sv-2ru" secondAttribute="trailing" constant="20" id="3bs-hD-X0I"/>
                             <constraint firstItem="cKb-64-cfq" firstAttribute="trailing" secondItem="KkC-G5-Yae" secondAttribute="trailing" constant="20" id="Baw-1A-iyG"/>
-                            <constraint firstItem="are-jT-0tT" firstAttribute="top" secondItem="KkC-G5-Yae" secondAttribute="bottom" constant="10" id="gZ2-eX-cH6"/>
+                            <constraint firstItem="nol-sv-2ru" firstAttribute="leading" secondItem="cKb-64-cfq" secondAttribute="leading" constant="20" id="eXk-uv-O2R"/>
                             <constraint firstItem="cKb-64-cfq" firstAttribute="bottom" secondItem="are-jT-0tT" secondAttribute="bottom" id="hHf-9R-dz3"/>
                             <constraint firstItem="KkC-G5-Yae" firstAttribute="top" secondItem="cKb-64-cfq" secondAttribute="top" constant="20" id="k2f-HG-jgj"/>
                             <constraint firstItem="are-jT-0tT" firstAttribute="leading" secondItem="cKb-64-cfq" secondAttribute="leading" id="px1-ms-oGx"/>
+                            <constraint firstItem="nol-sv-2ru" firstAttribute="top" secondItem="KkC-G5-Yae" secondAttribute="bottom" constant="10" id="qUP-2K-AKv"/>
                             <constraint firstItem="cKb-64-cfq" firstAttribute="trailing" secondItem="are-jT-0tT" secondAttribute="trailing" id="ryR-Ob-acK"/>
+                            <constraint firstItem="are-jT-0tT" firstAttribute="top" secondItem="nol-sv-2ru" secondAttribute="bottom" constant="10" id="zfC-5S-3ST"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="mockingSwitch" destination="BLq-6B-IBg" id="2VY-H7-cSk"/>
                         <outlet property="recordSwitch" destination="YjU-xp-c29" id="e1a-xr-fWC"/>
                         <outlet property="tableView" destination="are-jT-0tT" id="cjn-Vr-5oL"/>
                         <segue destination="4KR-5L-eI6" kind="show" identifier="showDetail" id="CmD-9w-ktj"/>
@@ -68,7 +93,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wz6-Se-b04" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="13" y="90"/>
+            <point key="canvasLocation" x="11.594202898550726" y="89.732142857142847"/>
         </scene>
         <!--Network Item Detail View Controller-->
         <scene sceneID="2yM-Er-Rf5">

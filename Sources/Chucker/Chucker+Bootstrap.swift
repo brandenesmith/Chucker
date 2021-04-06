@@ -7,6 +7,11 @@
 
 import Foundation
 
+internal extension String {
+    enum CommandLineArgs {
+        static let useMockData = "--useMockData"
+    }
+}
 public func bootstrap(configFilename: String?, mockDataManifest: String? = nil, mockDataBundle: Bundle? = nil) {
     _ = networkTrafficManager
 
