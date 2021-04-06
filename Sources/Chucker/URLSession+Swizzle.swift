@@ -70,7 +70,7 @@ final class FakeURLSessionTask: URLSessionDataTask {
         )
 
         let bytesToSend = Int64(_originalRequest.httpBody?.count ?? 0)
-        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
+        (self.session?.delegate as? URLSessionTaskDelegate)?.urlSession?(
             self.session!,
             task: self,
             didSendBodyData: bytesToSend,
@@ -101,9 +101,9 @@ final class FakeURLSessionTask: URLSessionDataTask {
             )
         }
 
-        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, task: self, didCompleteWithError: nil)
+        (self.session?.delegate as? URLSessionTaskDelegate)?.urlSession?(self.session!, task: self, didCompleteWithError: nil)
 
-        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
+        (self.session?.delegate as? URLSessionTaskDelegate)?.urlSession?(
             self.session!,
             task: self,
             didFinishCollecting: FakeURLSessionTaskMetrics(
