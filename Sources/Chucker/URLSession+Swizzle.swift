@@ -19,7 +19,8 @@ extension URLSession {
         )
     }
 
-    @objc func swizzledDataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
+    @objc func swizzledDataTask(with request: URLRequest,
+                                completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
         let networkRequest = NetworkRequest(date: Date(), request: request)
         networkTrafficManager.addRequest(networkRequest)
 
@@ -30,6 +31,10 @@ extension URLSession {
             )
 
             completionHandler(data, response, error)
+        }
+
+        if let fakeTask = fakeDataTaskIfNeeded(with: request, completionHandler: completionHandler) {
+            return fakeTask
         }
 
         return swizzledDataTask(with: request, completionHandler: replacedCompletion)
@@ -46,22 +51,32 @@ extension URLSession {
     }
 
     @objc func swizzledDataTask(with request: URLRequest) -> URLSessionDataTask {
+        if let fakeTask = fakeDataTaskIfNeeded(with: request, completionHandler: nil) {
+            return fakeTask
+        }
+
+        return swizzledDataTask(with: request)
+    }
+
+    private func fakeDataTaskIfNeeded(with request: URLRequest,
+                                      completionHandler: ((Data?, URLResponse?, Error?) -> Void)?) -> URLSessionDataTask? {
         if CommandLine.arguments.contains(String.CommandLineArgs.useMockData) {
             let shouldMock = try? networkTrafficManager
                 .mockDataManager?
                 .shouldMockResponse(for: request.url!.absoluteString.components(separatedBy: "?")[0])
-            
+
             if shouldMock ?? false {
                 let fakeTask = FakeURLSessionTask(
                     request: request,
-                    session: self
+                    session: self,
+                    completionHandler: completionHandler
                 )
 
                 return fakeTask
             }
         }
 
-        return swizzledDataTask(with: request)
+        return nil
     }
 }
 
@@ -88,21 +103,30 @@ final class FakeURLSessionTask: URLSessionDataTask {
             headerFields: mockResponse.headerFields
         )!
 
-        (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
-            self.session!,
-            dataTask: self,
-            didReceive: self.response!,
-            completionHandler: { (responseDisposition) in }
-        )
-
-        if let data = mockResponse.body {
-            (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, dataTask: self, didReceive: data)
+        // From the documentation:
+        // https://developer.apple.com/documentation/foundation/urlsessiondatadelegate
+        //
+        // > If you create a task using a method that takes a completion handler block,
+        // > the delegate methods for response and data delivery are not called.
+        if let completion = completion {
+            completion(mockResponse.body, self.response, nil)
+        } else {
             (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
                 self.session!,
                 dataTask: self,
-                willCacheResponse: CachedURLResponse(response: self.response!, data: data),
-                completionHandler: { cachedResponse in }
+                didReceive: self.response!,
+                completionHandler: { (responseDisposition) in }
             )
+
+            if let data = mockResponse.body {
+                (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(self.session!, dataTask: self, didReceive: data)
+                (self.session?.delegate as? URLSessionDataDelegate)?.urlSession?(
+                    self.session!,
+                    dataTask: self,
+                    willCacheResponse: CachedURLResponse(response: self.response!, data: data),
+                    completionHandler: { cachedResponse in }
+                )
+            }
         }
 
         (self.session?.delegate as? URLSessionTaskDelegate)?.urlSession?(self.session!, task: self, didCompleteWithError: nil)
@@ -120,6 +144,7 @@ final class FakeURLSessionTask: URLSessionDataTask {
     private weak var session: URLSession?
     private let _originalRequest: URLRequest
     private var _response: HTTPURLResponse?
+    private var completion: ((Data?, URLResponse?, Error?) -> Void)?
 
     override var originalRequest: URLRequest? {
         return _originalRequest
@@ -133,9 +158,10 @@ final class FakeURLSessionTask: URLSessionDataTask {
         return _response
     }
 
-    init(request: URLRequest, session: URLSession) {
+    init(request: URLRequest, session: URLSession, completionHandler: ((Data?, URLResponse?, Error?) -> Void)?) {
         self.session = session
         self._originalRequest = request
+        self.completion = completionHandler
     }
 }
 
