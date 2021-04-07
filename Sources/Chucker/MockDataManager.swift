@@ -31,7 +31,7 @@ final class MockDataManager {
     }
 
     func shouldMockResponse(for url: String) throws -> Bool {
-        return !workingConfig.excluded.contains(url)
+        return !url.hasMatchIn(workingConfig.excluded)
             && (workingConfig.included[url]?.useMock ?? false)
     }
 
@@ -67,5 +67,18 @@ final class MockDataManager {
         }
 
         return json
+    }
+}
+
+fileprivate extension String {
+    func hasMatchIn(_ excludedList: Set<String>) -> Bool {
+        for item in excludedList {
+            let regex = try! NSRegularExpression(pattern: item, options: [])
+            if !regex.matches(in: self, options: [], range: NSRange(location: 0, length: self.count)).isEmpty {
+                return true
+            }
+        }
+
+        return false
     }
 }
