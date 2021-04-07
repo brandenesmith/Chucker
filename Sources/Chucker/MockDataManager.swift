@@ -31,7 +31,8 @@ final class MockDataManager {
     }
 
     func shouldMockResponse(for url: String) throws -> Bool {
-        return workingConfig.items[url]!.useMock
+        return !workingConfig.excluded.contains(url)
+            && (workingConfig.included[url]?.useMock ?? false)
     }
 
     func mockResponse(for url: String) throws -> MockResponse {
@@ -39,7 +40,7 @@ final class MockDataManager {
             .decodeMockResponse(
                 from: try! data(
                     for: workingManifest.items[url]!.value(
-                        for: workingConfig.items[url]!.type
+                        for: workingConfig.included[url]!.type
                     ),
                     in: bundle
                 )

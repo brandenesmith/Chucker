@@ -66,23 +66,30 @@ Chucker also includes a response mocking feature that uses the same foundation a
 - Manifest
 - Associated Mock Data.
 
-Both the configuration and manifest files should be JSON files containing a top level object with individual objects keyed by the endpoint's URL and have the following formats: 
+Both the configuration and manifest files should be JSON files and have the following formats: 
 
 ### Configuration 
 
 ```JSON
 {
-    "https://<# endpoint>": {
-        "useMock": true,
-        "type": "success"
-    }
+    "included": [
+        {
+            "endpoint": "https://<# endpoint>",
+            "useMock": true,
+            "type": "success"
+        }
+    ],
+    "excluded": [
+        "<# excluded endpoint 1>",
+        "<# excluded endpoint 2>"
+    ]
 }
 ```
 > Note:
 >
 > There are two `type`s that may be applied, `"success"` and `"failure"`
 
-This file is loaded and, when data mocking is turned on, the framework consults this configuration file for the requested endpoint. If the value of `"useMock"` is `true` the framework will then consult the `Manifest` for this endpoint to find and read the mock response. If the value of `"useMock"` is `false`, the framework sends the request to the network as usual. 
+This file is loaded and, when data mocking is turned on, the framework consults this configuration file for the requested endpoint. If the endpoint is not excluded and the value of `"useMock"` is `true` the framework will then consult the `Manifest` for this endpoint to find and read the mock response. If the endpoint is excluded or the value of `"useMock"` is `false`, the framework sends the request to the network as usual. 
 
 ### Manifest
 

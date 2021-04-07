@@ -13,32 +13,29 @@ struct MockDataConfigItem: Decodable, Hashable {
         case failure
     }
 
+    let endpoint: String
     let useMock: Bool
     let type: ConfigType
 }
 
 struct MockDataConfig: Decodable {
-    let items: [String: MockDataConfigItem]
+    let included: [String: MockDataConfigItem]
+    let excluded: Set<String>
 
-    private struct DynamicCodingKeys: CodingKey {
-        var intValue: Int?
-        var stringValue: String
-
-        init?(stringValue: String) {
-            self.stringValue = stringValue
-        }
-
-        init?(intValue: Int) {
-            return nil
-        }
+    enum CodingKeys: String, CodingKey {
+        case included
+        case excluded
     }
 
     init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: DynamicCodingKeys.self)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        items = try container.allKeys.reduce(into: [:], { (result, key) in
-            let item = try container.decode(MockDataConfigItem.self, forKey: DynamicCodingKeys.init(stringValue: key.stringValue)!)
-            result[key.stringValue] = item
+        let includedItems = try container.decode([MockDataConfigItem].self, forKey: .included)
+        included = includedItems.reduce(into: [:], { (result, item) in
+            result[item.endpoint] = item
         })
+
+        let excludedItems: [String] = try container.decodeIfPresent([String].self, forKey: .excluded) ?? []
+        excluded = Set(excludedItems)
     }
 }
