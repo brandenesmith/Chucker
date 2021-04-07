@@ -30,6 +30,7 @@ final class NetworkTrafficManager {
     internal static let shared = NetworkTrafficManager()
 
     @Published internal var logItems: [NetworkListItem] = []
+    internal var mockDataManager: MockDataManager?
 
     internal var shouldRecord: Bool {
         didSet {
@@ -69,8 +70,12 @@ final class NetworkTrafficManager {
     private func performSwizzling() {
         URLSessionDataTask.swizzleResume()
         URLSession.swizzleDataTaskWithRequestCompletion()
+        URLSession.swizzleDataTaskWithRequest()
         SessionDelegate.swizzleURLSessionTaskDidReceiveData()
         SessionDelegate.swizzleURLSessionTaskDidCompleteWithError()
+        SessionDelegate.swizzleURLSessionTaskDidSendBodyData()
+        SessionDelegate.swizzleURLSessionWillCacheResponse()
+        SessionDelegate.swizzleURLSessionTaskFinishedCollectingMetrics()
         URLSessionClient.swizzleURLSessionTaskDidReceiveData()
         URLSessionClient.swizzleURLSessionTaskDidCompleteWithError()
     }

@@ -11,7 +11,8 @@ let package = Package(
     products: [
         .library(
             name: "Chucker",
-            targets: ["Chucker"])
+            targets: ["Chucker"]
+        )
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -22,7 +23,8 @@ let package = Package(
     targets: [
         .target(
             name: "Chucker",
-            dependencies: ["Alamofire", "Apollo"]
+            dependencies: ["Alamofire", "Apollo"],
+            exclude: ["docs/"]
         ),
         .testTarget(
             name: "ChuckerTests",
