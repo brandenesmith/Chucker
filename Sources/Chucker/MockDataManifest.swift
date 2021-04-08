@@ -11,7 +11,7 @@ struct ManifestItem: Decodable {
     let success: String
     let failure: String
 
-    func value(for configType: MockDataConfigItem.ConfigType) -> String {
+    func value(for configType: ConfigType) -> String {
         switch configType {
         case .success:
             return success

@@ -63,7 +63,7 @@ extension URLSession {
         if CommandLine.arguments.contains(String.CommandLineArgs.useMockData) {
             let shouldMock = try? networkTrafficManager
                 .mockDataManager?
-                .shouldMockResponse(for: request.url!.absoluteString.components(separatedBy: "?")[0])
+                .shouldMockResponse(for: request)
 
             if shouldMock ?? false {
                 let fakeTask = FakeURLSessionTask(
