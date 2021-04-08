@@ -38,16 +38,31 @@ final class MockDataManager {
             || shouldMockGraphQL(for: request)
     }
 
-    func mockResponse(for url: String) throws -> MockResponse {
-        return MockResponseDecoder()
-            .decodeMockResponse(
-                from: try! data(
-                    for: workingManifest.items[url]!.value(
-                        for: workingConfig.included[url]!.type
-                    ),
-                    in: bundle
+    func mockResponse(for request: URLRequest) throws -> MockResponse {
+        let endpoint = request.url!.absoluteString.components(separatedBy: "?")[0]
+
+        if let graphQLOperationType = request.allHTTPHeaderFields?[apolloOperationTypeHeader],
+           let graphQLOperationName = request.allHTTPHeaderFields?[apolloOperationNameHeader] {
+            return MockResponseDecoder()
+                .decodeMockResponse(
+                    from: try! data(
+                        for: workingManifest.items[endpoint + graphQLOperationType + graphQLOperationName]!.value(
+                            for: workingConfig.includedGraphQL[endpoint + graphQLOperationType + graphQLOperationName]!.type
+                        ),
+                        in: bundle
+                    )
                 )
-            )
+        } else {
+            return MockResponseDecoder()
+                .decodeMockResponse(
+                    from: try! data(
+                        for: workingManifest.items[endpoint]!.value(
+                            for: workingConfig.included[endpoint]!.type
+                        ),
+                        in: bundle
+                    )
+                )
+        }
     }
 
     private func shouldMockREST(for url: String) -> Bool {
