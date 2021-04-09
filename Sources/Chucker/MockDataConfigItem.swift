@@ -31,9 +31,8 @@ struct GraphQLMockDataConfigItem: Decodable {
     let type: ConfigType
 
     var key: String {
-        return endpoint
-            + operationType.rawValue
-            + operationName
+        return "\(endpoint)\(operationType.rawValue)\(operationName)"
+            .replacingOccurrences(of: "/", with: "")
     }
 }
 

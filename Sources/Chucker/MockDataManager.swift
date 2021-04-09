@@ -43,11 +43,14 @@ final class MockDataManager {
 
         if let graphQLOperationType = request.allHTTPHeaderFields?[apolloOperationTypeHeader],
            let graphQLOperationName = request.allHTTPHeaderFields?[apolloOperationNameHeader] {
+            let key = "\(endpoint)\(graphQLOperationType)\(graphQLOperationName)"
+                .replacingOccurrences(of: "/", with: "")
+
             return MockResponseDecoder()
                 .decodeMockResponse(
                     from: try! data(
-                        for: workingManifest.items[endpoint + graphQLOperationType + graphQLOperationName]!.value(
-                            for: workingConfig.includedGraphQL[endpoint + graphQLOperationType + graphQLOperationName]!.type
+                        for: workingManifest.graphqlItems[key]!.value(
+                            for: workingConfig.includedGraphQL[key]!.type
                         ),
                         in: bundle
                     )
@@ -56,7 +59,7 @@ final class MockDataManager {
             return MockResponseDecoder()
                 .decodeMockResponse(
                     from: try! data(
-                        for: workingManifest.items[endpoint]!.value(
+                        for: workingManifest.restItems[endpoint]!.value(
                             for: workingConfig.included[endpoint]!.type
                         ),
                         in: bundle
