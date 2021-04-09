@@ -78,9 +78,8 @@ final class MockDataManager {
         guard let opertationName = request.allHTTPHeaderFields?[apolloOperationNameHeader] else { return false }
 
         let endpoint = request.url!.absoluteString.components(separatedBy: "?")[0]
-        let graphQLKey = endpoint
-            + operationType
-            + opertationName
+        let graphQLKey = "\(endpoint)\(operationType)\(opertationName)"
+            .replacingOccurrences(of: "/", with: "")
 
         return !workingConfig.excludedGraphQL.contains(
             where: { (item) in
