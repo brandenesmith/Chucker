@@ -79,9 +79,25 @@ Both the configuration and manifest files should be JSON files and have the foll
             "type": "success"
         }
     ],
+    "includedGraphQL": [
+        {
+            "endpoint": "https://<# graphql endpoint>",
+            "operationType": "<# operation type>",
+            "operationName": "<# operation name>",
+            "useMock": true,
+            "type": "success"
+        }
+    ],
     "excluded": [
         "<# excluded endpoint 1>",
         "<# excluded endpoint 2>"
+    ],
+    "excludedGraphQL": [
+        {
+            "endpoint": "https://<# graphql endpoint>",
+            "operationType": "<# operation type>",
+            "operationName": "<# operation name>"
+        }
     ]
 }
 ```
@@ -95,10 +111,22 @@ This file is loaded and, when data mocking is turned on, the framework consults 
 
 ```JSON
 {
-    "https://<# endpoint>": {
-        "success": "path/to/mock-response-success",
-        "failure": "path/to/mock-response-failure"
-    }
+    "rest": [
+        {
+            "endpoint": "https://<# endpoint>",
+            "success": "path/to/mock-response-success",
+            "failure": "path/to/mock-response-failure"
+        }
+    ],
+    "graphql": [
+        {
+            "endpoint": "https://<# graphql endpoint>",
+            "operationType": "<# operation type>",
+            "operationName": "<# operation name>"
+            "success": "path/to/mock-response-success",
+            "failure": "path/to/mock-response-failure"
+        }
+    ]
 }
 ```
 
@@ -113,7 +141,7 @@ Each mock response is also a JSON file with the following format:
     "httpVersion": null,
     "headerFields": {},
     "body": {
-        "question": "Test Question Fool",
+        "question": "Test Question",
         "published_at": "2015-08-05T08:40:51.620Z",
         "choices": [
             {

@@ -15,6 +15,7 @@ public final class ChuckerViewController: UIViewController {
     @IBOutlet weak var recordSwitch: UISwitch!
     @IBOutlet weak var mockingSwitch: UISwitch!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var enableResponseMockingView: UIStackView!
 
     private lazy var noItemsView: NoItemsView = {
         let noItemsView = Bundle
@@ -48,7 +49,15 @@ public final class ChuckerViewController: UIViewController {
         super.viewDidLoad()
 
         self.recordSwitch.isOn = networkTrafficManager.shouldRecord
-        self.mockingSwitch.isOn = CommandLine.arguments.contains(String.CommandLineArgs.useMockData)
+
+        if networkTrafficManager.mockDataManager != nil {
+            self.mockingSwitch.isOn = CommandLine.arguments.contains(String.CommandLineArgs.useMockData)
+            self.enableResponseMockingView.isHidden = false
+        } else {
+            self.mockingSwitch.isOn = false
+            self.enableResponseMockingView.isHidden = true
+        }
+
         
         tableView.register(
             UINib(nibName: "NetworkListItemCell", bundle: Bundle.module),

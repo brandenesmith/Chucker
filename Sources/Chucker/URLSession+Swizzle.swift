@@ -63,7 +63,7 @@ extension URLSession {
         if CommandLine.arguments.contains(String.CommandLineArgs.useMockData) {
             let shouldMock = try? networkTrafficManager
                 .mockDataManager?
-                .shouldMockResponse(for: request.url!.absoluteString.components(separatedBy: "?")[0])
+                .shouldMockResponse(for: request)
 
             if shouldMock ?? false {
                 let fakeTask = FakeURLSessionTask(
@@ -84,7 +84,7 @@ final class FakeURLSessionTask: URLSessionDataTask {
     override func resume() {
         let start = Date()
         let mockResponse = try! networkTrafficManager.mockDataManager!.mockResponse(
-            for: _originalRequest.url!.absoluteString.components(separatedBy: "?")[0]
+            for: _originalRequest
         )
 
         let bytesToSend = Int64(_originalRequest.httpBody?.count ?? 0)
