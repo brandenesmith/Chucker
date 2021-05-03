@@ -21,8 +21,8 @@ final class MockDataManager {
     private var workingManifest: MockDataManifest!
     private var workingConfig: MockDataConfig!
 
-    private let apolloOperationTypeHeader = "X-APOLLO-OPERATION-TYPE"
-    private let apolloOperationNameHeader = "X-APOLLO-OPERATION-NAME"
+    fileprivate static let apolloOperationTypeHeader = "X-APOLLO-OPERATION-TYPE"
+    fileprivate static let apolloOperationNameHeader = "X-APOLLO-OPERATION-NAME"
 
     init(config: String, manifest: String, bundle: Bundle) {
         self.config = config
@@ -33,63 +33,21 @@ final class MockDataManager {
         self.workingManifest = try! JSONDecoder().decode(MockDataManifest.self, from: try! data(for: manifest, in: bundle))
     }
 
-    func shouldMockResponse(for request: URLRequest) throws -> Bool {
-        return shouldMockREST(for: request.url!.absoluteString.components(separatedBy: "?")[0])
-            || shouldMockGraphQL(for: request)
-    }
-
     func mockResponse(for request: URLRequest) throws -> MockResponse {
-        let endpoint = request.url!.absoluteString.components(separatedBy: "?")[0]
+        let responseKey = workingConfig.included[request.key]!.responseKey
 
-        if let graphQLOperationType = request.allHTTPHeaderFields?[apolloOperationTypeHeader],
-           let graphQLOperationName = request.allHTTPHeaderFields?[apolloOperationNameHeader] {
-            let key = "\(endpoint)\(graphQLOperationType)\(graphQLOperationName)"
-                .replacingOccurrences(of: "/", with: "")
-
-            return MockResponseDecoder()
-                .decodeMockResponse(
-                    from: try! data(
-                        for: workingManifest.graphqlItems[key]!.value(
-                            for: workingConfig.includedGraphQL[key]!.type
-                        ),
-                        in: bundle
-                    )
+        return MockResponseDecoder()
+            .decodeMockResponse(
+                from: try! data(
+                    for: workingManifest.items[request.key]!.responseMap[responseKey]!,
+                    in: bundle
                 )
-        } else {
-            return MockResponseDecoder()
-                .decodeMockResponse(
-                    from: try! data(
-                        for: workingManifest.restItems[endpoint]!.value(
-                            for: workingConfig.included[endpoint]!.type
-                        ),
-                        in: bundle
-                    )
-                )
-        }
+            )
     }
 
-    private func shouldMockREST(for url: String) -> Bool {
-        return !url.hasMatchIn(workingConfig.excluded)
-            && (workingConfig.included[url]?.useMock ?? false)
-    }
-
-    private func shouldMockGraphQL(for request: URLRequest) -> Bool {
-        guard let operationType = request.allHTTPHeaderFields?[apolloOperationTypeHeader] else { return false }
-        guard let opertationName = request.allHTTPHeaderFields?[apolloOperationNameHeader] else { return false }
-
-        let endpoint = request.url!.absoluteString.components(separatedBy: "?")[0]
-        let graphQLKey = "\(endpoint)\(operationType)\(opertationName)"
-            .replacingOccurrences(of: "/", with: "")
-
-        return !workingConfig.excludedGraphQL.contains(
-            where: { (item) in
-                item == GraphQLExclusion(
-                    endpoint: endpoint,
-                    operationType: GraphQLMockDataConfigItem.OperationType.init(rawValue: operationType)!,
-                    operationName: opertationName
-                )}
-        )
-        && (workingConfig.includedGraphQL[graphQLKey]?.useMock ?? false)
+    func shouldMockResponse(for request: URLRequest) -> Bool {
+        return !request.key.hasMatchIn(workingConfig.excluded)
+            && (workingConfig.included[request.key]?.useMock ?? false)
     }
 
     private func data(for filename: String, in bundle: Bundle) throws -> Data {
@@ -125,5 +83,19 @@ fileprivate extension String {
         }
 
         return false
+    }
+}
+
+fileprivate extension URLRequest {
+    var key: String {
+        let url = self.url!.absoluteString.components(separatedBy: "?")[0]
+
+        var key = "\(url)"
+
+        if let method = self.httpMethod { key += method }
+        if let opType = self.allHTTPHeaderFields?[MockDataManager.apolloOperationTypeHeader] { key += opType }
+        if let opName = self.allHTTPHeaderFields?[MockDataManager.apolloOperationNameHeader] { key += opName }
+
+        return key
     }
 }
