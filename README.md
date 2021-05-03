@@ -75,35 +75,27 @@ Both the configuration and manifest files should be JSON files and have the foll
     "included": [
         {
             "endpoint": "https://<# endpoint>",
-            "useMock": true,
-            "type": "success"
-        }
-    ],
-    "includedGraphQL": [
+            "method": "GET",
+            "useMock": false,
+            "responseKey": "success"
+        },
         {
-            "endpoint": "https://<# graphql endpoint>",
-            "operationType": "<# operation type>",
-            "operationName": "<# operation name>",
-            "useMock": true,
-            "type": "success"
+            "endpoint": "https://graphql.<# endpoint>",
+            "method": "POST",
+            "operationType": "query",
+            "operationName": "<# query name>",
+            "useMock": false,
+            "responseKey": "success"
         }
     ],
     "excluded": [
-        "<# excluded endpoint 1>",
-        "<# excluded endpoint 2>"
-    ],
-    "excludedGraphQL": [
-        {
-            "endpoint": "https://<# graphql endpoint>",
-            "operationType": "<# operation type>",
-            "operationName": "<# operation name>"
-        }
+        "https://<# endpoint to exclude>/*"
     ]
 }
 ```
 > Note:
 >
-> There are two `type`s that may be applied, `"success"` and `"failure"`
+> The manifest contains a `responseMap` where you can list multiple responses. The item to be used will be the item corresponding to the `responseKey` field.
 
 This file is loaded and, when data mocking is turned on, the framework consults this configuration file for the requested endpoint. If the endpoint is not excluded and the value of `"useMock"` is `true` the framework will then consult the `Manifest` for this endpoint to find and read the mock response. If the endpoint is excluded or the value of `"useMock"` is `false`, the framework sends the request to the network as usual. 
 
@@ -111,20 +103,24 @@ This file is loaded and, when data mocking is turned on, the framework consults 
 
 ```JSON
 {
-    "rest": [
+    "items": [
         {
             "endpoint": "https://<# endpoint>",
-            "success": "path/to/mock-response-success",
-            "failure": "path/to/mock-response-failure"
-        }
-    ],
-    "graphql": [
+            "method": "GET",
+            "responseMap": {
+                "success": "<# path/to/success/response>",
+                "failure": "<# path/to/failure/response>"
+            }
+        },
         {
-            "endpoint": "https://<# graphql endpoint>",
-            "operationType": "<# operation type>",
-            "operationName": "<# operation name>"
-            "success": "path/to/mock-response-success",
-            "failure": "path/to/mock-response-failure"
+            "endpoint": "https://graphql.<# endpoint>",
+            "method": "POST",
+            "operationType": "query",
+            "operationName": "<# query name>",
+            "responseMap": {
+                "success": "<# path/to/success/response>",
+                "failure": "<# path/to/failure/response>"
+            }
         }
     ]
 }
