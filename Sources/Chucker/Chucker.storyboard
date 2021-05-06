@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="yTF-Vf-PJO">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="yTF-Vf-PJO">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="OOq-0x-Bmm">
-                                <rect key="frame" x="20" y="54" width="374" height="72"/>
+                                <rect key="frame" x="20" y="54" width="374" height="112"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="KkC-G5-Yae">
                                         <rect key="frame" x="0.0" y="0.0" width="374" height="31"/>
@@ -63,10 +63,21 @@
                                             </switch>
                                         </subviews>
                                     </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lHe-Hg-K8e">
+                                        <rect key="frame" x="0.0" y="82" width="374" height="30"/>
+                                        <color key="backgroundColor" systemColor="linkColor"/>
+                                        <state key="normal" title="Edit Mocking Configuration">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="editMockConfigButtonTouched:" destination="yTF-Vf-PJO" eventType="touchUpInside" id="hMf-XI-P6b"/>
+                                            <segue destination="Vs3-RN-EeB" kind="show" identifier="showEditConfig" id="qTz-9f-mwr"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                             </stackView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="are-jT-0tT">
-                                <rect key="frame" x="0.0" y="136" width="414" height="726"/>
+                                <rect key="frame" x="0.0" y="176" width="414" height="686"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <connections>
                                     <outlet property="dataSource" destination="yTF-Vf-PJO" id="gW1-gG-Aoa"/>
@@ -87,6 +98,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="editMockConfigButton" destination="lHe-Hg-K8e" id="7kw-8i-KF4"/>
                         <outlet property="enableResponseMockingView" destination="nol-sv-2ru" id="c6X-Xs-DeX"/>
                         <outlet property="mockingSwitch" destination="BLq-6B-IBg" id="2VY-H7-cSk"/>
                         <outlet property="recordSwitch" destination="YjU-xp-c29" id="e1a-xr-fWC"/>
@@ -97,6 +109,41 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wz6-Se-b04" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="11.594202898550726" y="89.732142857142847"/>
+        </scene>
+        <!--Edit Mock Data Config View Controller-->
+        <scene sceneID="Grb-8u-EJQ">
+            <objects>
+                <viewController id="Vs3-RN-EeB" customClass="EditMockDataConfigViewController" customModule="Chucker" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="MRd-VF-JVM">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="tfU-gM-OG1">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="Vs3-RN-EeB" id="zfp-73-UJv"/>
+                                    <outlet property="delegate" destination="Vs3-RN-EeB" id="yVH-DH-mVA"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="2N4-GD-qYI"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="2N4-GD-qYI" firstAttribute="bottom" secondItem="tfU-gM-OG1" secondAttribute="bottom" id="3K5-vw-ce3"/>
+                            <constraint firstItem="2N4-GD-qYI" firstAttribute="trailing" secondItem="tfU-gM-OG1" secondAttribute="trailing" id="YDH-FZ-MGK"/>
+                            <constraint firstItem="tfU-gM-OG1" firstAttribute="leading" secondItem="2N4-GD-qYI" secondAttribute="leading" id="pW3-SF-cdi"/>
+                            <constraint firstItem="tfU-gM-OG1" firstAttribute="top" secondItem="2N4-GD-qYI" secondAttribute="top" id="uba-3Y-lV0"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="Zjj-xg-mkt"/>
+                    <connections>
+                        <outlet property="tableView" destination="tfU-gM-OG1" id="YxT-eV-VF5"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Iqm-3h-fja" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="938" y="461"/>
         </scene>
         <!--Network Item Detail View Controller-->
         <scene sceneID="2yM-Er-Rf5">
@@ -182,13 +229,16 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Q76-VY-YLM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="811.59420289855075" y="89.732142857142847"/>
+            <point key="canvasLocation" x="938" y="-263"/>
         </scene>
     </scenes>
     <resources>
         <image name="arrowtriangle.down.fill" catalog="system" width="128" height="124"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="linkColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

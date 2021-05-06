@@ -18,8 +18,8 @@ final class MockDataManager {
     private let manifest: String
     private let bundle: Bundle
 
-    private var workingManifest: MockDataManifest!
-    private var workingConfig: MockDataConfig!
+    internal var workingManifest: MockDataManifest!
+    internal var workingConfig: MockDataConfig!
 
     fileprivate static let apolloOperationTypeHeader = "X-APOLLO-OPERATION-TYPE"
     fileprivate static let apolloOperationNameHeader = "X-APOLLO-OPERATION-NAME"

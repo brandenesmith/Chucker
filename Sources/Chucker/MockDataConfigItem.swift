@@ -8,6 +8,7 @@
 import Foundation
 
 struct MockDataConfigItem: Decodable, Hashable {
+    let name: String
     let endpoint: String
     let method: String
     let operationName: String?
@@ -26,8 +27,8 @@ struct MockDataConfigItem: Decodable, Hashable {
 }
 
 struct MockDataConfig: Decodable {
-    let included: [String: MockDataConfigItem]
-    let excluded: Set<String>
+    var included: [String: MockDataConfigItem]
+    var excluded: Set<String>
 
     enum CodingKeys: String, CodingKey {
         case included

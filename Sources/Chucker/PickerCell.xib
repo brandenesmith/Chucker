@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="104" id="Xm7-vL-pG5" customClass="PickerCell" customModule="Chucker">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="104"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Xm7-vL-pG5" id="vbY-ge-ihg">
+                <rect key="frame" x="0.0" y="0.0" width="414" height="104"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="bLs-HB-lQf">
+                        <rect key="frame" x="20" y="0.0" width="374" height="104"/>
+                        <subviews>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dtJ-WD-Ynz">
+                                <rect key="frame" x="0.0" y="0.0" width="374" height="104"/>
+                            </pickerView>
+                        </subviews>
+                    </stackView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="bLs-HB-lQf" firstAttribute="top" secondItem="vbY-ge-ihg" secondAttribute="top" id="6aV-HA-0SX"/>
+                    <constraint firstAttribute="bottom" secondItem="bLs-HB-lQf" secondAttribute="bottom" id="YPr-eI-C83"/>
+                    <constraint firstItem="bLs-HB-lQf" firstAttribute="leading" secondItem="vbY-ge-ihg" secondAttribute="leading" constant="20" id="gWc-us-Rna"/>
+                    <constraint firstAttribute="trailing" secondItem="bLs-HB-lQf" secondAttribute="trailing" constant="20" id="sRc-5N-nip"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="pickerView" destination="dtJ-WD-Ynz" id="Dm7-dm-qjD"/>
+            </connections>
+            <point key="canvasLocation" x="66.666666666666671" y="-40.178571428571423"/>
+        </tableViewCell>
+    </objects>
+</document>
