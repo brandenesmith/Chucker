@@ -16,6 +16,7 @@ public final class ChuckerViewController: UIViewController {
     @IBOutlet weak var mockingSwitch: UISwitch!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var enableResponseMockingView: UIStackView!
+    @IBOutlet weak var editMockConfigButton: UIButton!
 
     private lazy var noItemsView: NoItemsView = {
         let noItemsView = Bundle
@@ -49,20 +50,23 @@ public final class ChuckerViewController: UIViewController {
         super.viewDidLoad()
 
         self.recordSwitch.isOn = networkTrafficManager.shouldRecord
+        self.editMockConfigButton.layer.cornerRadius = 5.0
 
         if networkTrafficManager.mockDataManager != nil {
             self.mockingSwitch.isOn = CommandLine.arguments.contains(String.CommandLineArgs.useMockData)
             self.enableResponseMockingView.isHidden = false
+            self.editMockConfigButton.isHidden = !self.mockingSwitch.isOn
         } else {
             self.mockingSwitch.isOn = false
             self.enableResponseMockingView.isHidden = true
+            self.editMockConfigButton.isHidden = true
         }
 
-        
         tableView.register(
             UINib(nibName: "NetworkListItemCell", bundle: Bundle.module),
             forCellReuseIdentifier: "NetworkListItemCell"
         )
+        tableView.tableFooterView = UIView(frame: CGRect.zero)
 
         setupLogItemsSubscription()
     }
@@ -108,6 +112,8 @@ public final class ChuckerViewController: UIViewController {
     }
 
     @IBAction func mockDataSwitchValueChanged(_ sender: UISwitch) {
+        self.editMockConfigButton.isHidden = !sender.isOn
+
         if sender.isOn {
             if !CommandLine.arguments.contains(String.CommandLineArgs.useMockData) {
                 CommandLine.arguments.append(String.CommandLineArgs.useMockData)
@@ -115,6 +121,10 @@ public final class ChuckerViewController: UIViewController {
         } else {
             CommandLine.arguments.removeAll(where: { $0.contains(String.CommandLineArgs.useMockData)})
         }
+    }
+
+    @IBAction func editMockConfigButtonTouched(_ sender: UIButton) {
+        
     }
 }
 
