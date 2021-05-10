@@ -74,12 +74,14 @@ Both the configuration and manifest files should be JSON files and have the foll
 {
     "included": [
         {
+            "name": "<# plain text name/description of endpoint>",
             "endpoint": "https://<# endpoint>",
             "method": "GET",
             "useMock": false,
             "responseKey": "success"
         },
         {
+            "name": "<# plain text name/description of endpoint>",
             "endpoint": "https://graphql.<# endpoint>",
             "method": "POST",
             "operationType": "query",
