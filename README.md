@@ -107,6 +107,7 @@ This file is loaded and, when data mocking is turned on, the framework consults 
 {
     "items": [
         {
+            "name": "<# plain text name/description of endpoint>",
             "endpoint": "https://<# endpoint>",
             "method": "GET",
             "responseMap": {
@@ -115,6 +116,7 @@ This file is loaded and, when data mocking is turned on, the framework consults 
             }
         },
         {
+            "name": "<# plain text name/description of endpoint>",
             "endpoint": "https://graphql.<# endpoint>",
             "method": "POST",
             "operationType": "query",

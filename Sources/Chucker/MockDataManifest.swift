@@ -8,6 +8,7 @@
 import Foundation
 
 struct ManifestItem: Decodable {
+    let name: String
     let endpoint: String
     let method: String
     let operationType: String?
