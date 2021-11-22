@@ -60,6 +60,8 @@ extension URLSession {
 
     private func fakeDataTaskIfNeeded(with request: URLRequest,
                                       completionHandler: ((Data?, URLResponse?, Error?) -> Void)?) -> URLSessionDataTask? {
+        assert(networkTrafficManager.mockDataManager!.mockingEnabled, "Expected Mocking To Be True Bruh...")
+
         if networkTrafficManager.mockDataManager?.mockingEnabled ?? false {
             let shouldMock = networkTrafficManager
                 .mockDataManager?
