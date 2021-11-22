@@ -7,19 +7,19 @@
 
 import Foundation
 
-internal extension String {
-    enum CommandLineArgs {
-        static let useMockData = "--useMockData"
-    }
+enum DefaultsKey {
+    static let useMockData = "chuckerMockDataEnabled"
 }
-public func bootstrap(configFilename: String?, mockDataManifest: String? = nil, mockDataBundle: Bundle? = nil) {
+
+public func bootstrap(configFilename: String?, mockDataManifest: String? = nil, mockDataBundle: Bundle? = nil, userDefaults: UserDefaults) {
     _ = networkTrafficManager
 
     if let config = configFilename, let mockDataManifest = mockDataManifest {
         networkTrafficManager.mockDataManager = MockDataManager(
             config: config,
             manifest: mockDataManifest,
-            bundle: mockDataBundle ?? .main
+            bundle: mockDataBundle ?? .main,
+            userDefaults: userDefaults
         )
     }
 }

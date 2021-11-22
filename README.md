@@ -174,10 +174,9 @@ It is likely undesirable to add the mock data and configuration files to the App
 ![Run Script Phase for Mock Data](/docs/images/mock_data_run_script_phase.png)
 
 ### Using the Mock Data Feature
-To use the mock data feature there are three launch arguments: 
+To use the mock data feature there are two launch arguments: 
 - `--mockDataManifest <# name of your manifest file>`
 - `--mockDataConfig <# name of your configuration file>`
-- `--useMockData`
 
 `These items may be added to the launch arguments on your scheme as follows: 
 ![Mock Data Launch Args](/docs/images/chucker_mockdata_launch_args.png)

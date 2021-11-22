@@ -17,6 +17,7 @@ final class MockDataManager {
     private let config: String
     private let manifest: String
     private let bundle: Bundle
+    private let userDefaults: UserDefaults
 
     internal var workingManifest: MockDataManifest!
     internal var workingConfig: MockDataConfig!
@@ -24,10 +25,20 @@ final class MockDataManager {
     fileprivate static let apolloOperationTypeHeader = "X-APOLLO-OPERATION-TYPE"
     fileprivate static let apolloOperationNameHeader = "X-APOLLO-OPERATION-NAME"
 
-    init(config: String, manifest: String, bundle: Bundle) {
+    internal var mockingEnabled: Bool {
+        get {
+            return userDefaults.bool(forKey: DefaultsKey.useMockData)
+        }
+        set {
+            userDefaults.set(newValue, forKey: DefaultsKey.useMockData)
+        }
+    }
+
+    init(config: String, manifest: String, bundle: Bundle, userDefaults: UserDefaults) {
         self.config = config
         self.manifest = manifest
         self.bundle = bundle
+        self.userDefaults = userDefaults
 
         self.workingConfig = try! JSONDecoder().decode(MockDataConfig.self, from: try! data(for: config, in: bundle))
         self.workingManifest = try! JSONDecoder().decode(MockDataManifest.self, from: try! data(for: manifest, in: bundle))

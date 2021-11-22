@@ -53,7 +53,7 @@ public final class ChuckerViewController: UIViewController {
         self.editMockConfigButton.layer.cornerRadius = 5.0
 
         if networkTrafficManager.mockDataManager != nil {
-            self.mockingSwitch.isOn = CommandLine.arguments.contains(String.CommandLineArgs.useMockData)
+            self.mockingSwitch.isOn = networkTrafficManager.mockDataManager!.mockingEnabled
             self.enableResponseMockingView.isHidden = false
             self.editMockConfigButton.isHidden = !self.mockingSwitch.isOn
         } else {
@@ -114,13 +114,7 @@ public final class ChuckerViewController: UIViewController {
     @IBAction func mockDataSwitchValueChanged(_ sender: UISwitch) {
         self.editMockConfigButton.isHidden = !sender.isOn
 
-        if sender.isOn {
-            if !CommandLine.arguments.contains(String.CommandLineArgs.useMockData) {
-                CommandLine.arguments.append(String.CommandLineArgs.useMockData)
-            }
-        } else {
-            CommandLine.arguments.removeAll(where: { $0.contains(String.CommandLineArgs.useMockData)})
-        }
+        networkTrafficManager.mockDataManager!.mockingEnabled = sender.isOn
     }
 
     @IBAction func editMockConfigButtonTouched(_ sender: UIButton) {
