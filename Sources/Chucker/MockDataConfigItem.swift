@@ -59,6 +59,8 @@ struct MockDataConfig: Decodable {
 
             var tokenizedItem = item.split(separator: "/")
 
+            guard tokenizedItem.count == tokenizedKey.count else { continue }
+
             for index in pathParamIndicies {
                 tokenizedKey.remove(at: index)
                 tokenizedItem.remove(at: index)
