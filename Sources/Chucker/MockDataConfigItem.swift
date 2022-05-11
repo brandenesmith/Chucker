@@ -67,7 +67,7 @@ struct MockDataConfig: Decodable {
             }
 
             if tokenizedKey.joined(separator: "") == tokenizedItem.joined(separator: "") {
-                return included(key: item)
+                return included[item]
             }
         }
 
