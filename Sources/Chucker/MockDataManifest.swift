@@ -69,7 +69,7 @@ struct MockDataManifest: Decodable {
     }
 
     private func getPathParamIndicies(key: String) -> [Int] {
-        guard let expression = try? NSRegularExpression(pattern: "^\\{.*\\}$") else { return [] }
+        guard let expression = try? NSRegularExpression(pattern: "\\{.*\\}") else { return [] }
 
         var matches: [Int] = []
 
