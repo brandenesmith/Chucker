@@ -34,7 +34,7 @@ final class MockDataManager {
     }
 
     func mockResponse(for request: URLRequest) throws -> MockResponse {
-        let responseKey = workingConfig.included[request.key]!.responseKey
+        let responseKey = workingConfig.included(key: request.key)!.responseKey
 
         return MockResponseDecoder()
             .decodeMockResponse(
@@ -47,7 +47,7 @@ final class MockDataManager {
 
     func shouldMockResponse(for request: URLRequest) -> Bool {
         return !request.key.hasMatchIn(workingConfig.excluded)
-            && (workingConfig.included[request.key]?.useMock ?? false)
+        && (workingConfig.included(key: request.key)?.useMock ?? false)
     }
 
     private func data(for filename: String, in bundle: Bundle) throws -> Data {
