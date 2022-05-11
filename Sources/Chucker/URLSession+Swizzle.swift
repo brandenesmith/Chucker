@@ -61,7 +61,7 @@ extension URLSession {
     private func fakeDataTaskIfNeeded(with request: URLRequest,
                                       completionHandler: ((Data?, URLResponse?, Error?) -> Void)?) -> URLSessionDataTask? {
         if CommandLine.arguments.contains(String.CommandLineArgs.useMockData) {
-            let shouldMock = try? networkTrafficManager
+            let shouldMock = networkTrafficManager
                 .mockDataManager?
                 .shouldMockResponse(for: request)
 
