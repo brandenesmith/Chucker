@@ -39,7 +39,7 @@ final class MockDataManager {
         return MockResponseDecoder()
             .decodeMockResponse(
                 from: try! data(
-                    for: workingManifest.items[request.key]!.responseMap[responseKey]!,
+                    for: workingManifest.included(key: request.key)!.responseMap[responseKey]!,
                     in: bundle
                 )
             )
