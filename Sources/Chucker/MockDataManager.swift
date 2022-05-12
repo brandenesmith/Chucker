@@ -67,13 +67,12 @@ final class MockDataManager {
 
             guard !pathParamIndicies.isEmpty else { continue }
 
-            var tokenizedItem = item.split(separator: "/")
+            let tokenizedItem = item.split(separator: "/")
 
             guard tokenizedItem.count == tokenizedEndpoint.count - pathParamIndicies.count else { continue }
 
             for index in pathParamIndicies {
                 tokenizedEndpoint.remove(at: index)
-                tokenizedItem.remove(at: index)
             }
 
             let joinedKey = tokenizedEndpoint.joined(separator: "")
