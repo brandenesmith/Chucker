@@ -28,8 +28,8 @@ final class ConfigItemPickerViewManager: NSObject {
 
         self.pickerItems = networkTrafficManager
             .mockDataManager!
-            .workingManifest
-            .items[managedItemKey]!
+            .workingConfig[managedItemKey]!
+            .manifestItem
             .responseMap
             .keys
             .sorted(by: { $0 < $1 })

@@ -8,6 +8,16 @@
 import Foundation
 
 struct MockDataConfigItem: Decodable, Hashable {
+    enum CodingKeys: String, CodingKey {
+        case name
+        case endpoint
+        case method
+        case operationName
+        case operationType
+        case useMock
+        case responseKey
+    }
+
     let name: String
     let endpoint: String
     let method: String
@@ -15,14 +25,36 @@ struct MockDataConfigItem: Decodable, Hashable {
     let operationType: String?
     let useMock: Bool
     let responseKey: String
+    let key: String
+    let sanitizedKeyInfo: SanitizedKeyInfo
 
-    var key: String {
-        var key = "\(endpoint)\(method)"
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        if let opType = operationType { key += opType }
-        if let opName = operationName { key += opName }
+        name = try container.decode(String.self, forKey: .name)
+        endpoint = try container.decode(String.self, forKey: .endpoint)
+        method = try container.decode(String.self, forKey: .method)
+        operationName = try container.decode(String?.self, forKey: .operationName)
+        operationType = try container.decode(String?.self, forKey: .operationType)
+        useMock = try container.decode(Bool.self, forKey: .useMock)
+        responseKey = try container.decode(String.self, forKey: .responseKey)
+        
 
-        return key
+        self.key = KeySanitizer.createKey(endpoint: endpoint, method: method, operationName: operationName, operationType: operationType)
+        self.sanitizedKeyInfo = KeySanitizer.getSanitizedKeyInfo(key: key)
+    }
+
+    init(name: String, endpoint: String, method: String, operationName: String?, operationType: String?, useMock: Bool, responseKey: String) {
+        self.name = name
+        self.endpoint = endpoint
+        self.method = method
+        self.operationName = operationName
+        self.operationType = operationType
+        self.useMock = useMock
+        self.responseKey = responseKey
+        
+        self.key = KeySanitizer.createKey(endpoint: endpoint, method: method, operationName: operationName, operationType: operationType)
+        self.sanitizedKeyInfo = KeySanitizer.getSanitizedKeyInfo(key: key)
     }
 }
 

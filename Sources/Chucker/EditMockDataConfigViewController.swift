@@ -11,17 +11,16 @@ import UIKit
 final class EditMockDataConfigViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
 
-    private lazy var items: [MockDataConfigItem] = {
+    private lazy var items: [EndpointConfig] = {
         return networkTrafficManager
             .mockDataManager!
             .workingConfig
-            .included
             .values
-            .sorted(by: { $0.name < $1.name })
+            .sorted(by: { $0.configItem.name < $1.configItem.name })
     }()
 
     private lazy var pickerManagers: [ConfigItemPickerViewManager] = {
-        return items.map({ ConfigItemPickerViewManager(managedItem: $0, delegate: self) })
+        return items.map({ ConfigItemPickerViewManager(managedItem: $0.configItem, delegate: self) })
     }()
 
     override func viewDidLoad() {
@@ -50,7 +49,7 @@ final class EditMockDataConfigViewController: UIViewController {
 
 extension EditMockDataConfigViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return networkTrafficManager.mockDataManager!.workingConfig.included.count * 2
+        return networkTrafficManager.mockDataManager!.workingConfig.count * 2
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -69,20 +68,20 @@ extension EditMockDataConfigViewController: UITableViewDataSource {
 
         cell.delegate = self
 
-        cell.nameLabel.text = item.name
-        cell.endpointLabel.text = item.endpoint
-        cell.methodLabel.text = item.method
+        cell.nameLabel.text = item.configItem.name
+        cell.endpointLabel.text = item.configItem.endpoint
+        cell.methodLabel.text = item.configItem.method
 
-        cell.operationTypeLabel.isHidden = item.operationType == nil
-        cell.operationTypeLabel.text = item.operationType
+        cell.operationTypeLabel.isHidden = item.configItem.operationType == nil
+        cell.operationTypeLabel.text = item.configItem.operationType
 
-        cell.operationNameLabel.isHidden = item.operationName == nil
-        cell.operationNameLabel.text = item.operationName
+        cell.operationNameLabel.isHidden = item.configItem.operationName == nil
+        cell.operationNameLabel.text = item.configItem.operationName
 
         cell.useMockLabel.text = "Use Mock Data"
-        cell.useMockSwitch.isOn = item.useMock
+        cell.useMockSwitch.isOn = item.configItem.useMock
 
-        cell.responseKeyLabel.text = "Response Key: \(item.responseKey)"
+        cell.responseKeyLabel.text = "Response Key: \(item.configItem.responseKey)"
 
         return cell
     }
@@ -123,21 +122,26 @@ extension EditMockDataConfigViewController: UITableViewDelegate {
 
 extension EditMockDataConfigViewController: ConfigItemPickerViewManagerDelegate {
     func configItemManager(didSelectResponseKey key: String, for managedItemKey: String) {
-        let originalItem = networkTrafficManager.mockDataManager!.workingConfig.included[managedItemKey]!
+        let originalItem = networkTrafficManager.mockDataManager!.workingConfig[managedItemKey]!
         let newItem = MockDataConfigItem(
-            name: originalItem.name,
-            endpoint: originalItem.endpoint,
-            method: originalItem.method,
-            operationName: originalItem.operationName,
-            operationType: originalItem.operationType,
-            useMock: originalItem.useMock,
+            name: originalItem.configItem.name,
+            endpoint: originalItem.configItem.endpoint,
+            method: originalItem.configItem.method,
+            operationName: originalItem.configItem.operationName,
+            operationType: originalItem.configItem.operationType,
+            useMock: originalItem.configItem.useMock,
             responseKey: key
         )
 
-        networkTrafficManager.mockDataManager?.workingConfig.included[managedItemKey] = newItem
+        let newConfig = EndpointConfig(
+            configItem: newItem,
+            manifestItem: originalItem.manifestItem
+        )
 
-        let itemIndex = items.firstIndex(where: { $0.key == managedItemKey })!
-        items[itemIndex] = newItem
+        networkTrafficManager.mockDataManager?.workingConfig[managedItemKey] = newConfig
+
+        let itemIndex = items.firstIndex(where: { $0.configItem.key == managedItemKey })!
+        items[itemIndex] = newConfig
 
         tableView.reloadRows(at: [IndexPath(row: itemIndex, section: 0)], with: .automatic)
     }
@@ -156,15 +160,18 @@ extension EditMockDataConfigViewController: MockDataConfigItemCellDelegate {
         let index = convertIndex(tableView.indexPath(for: cell)!.row)
         let originalItem = items[index]
         let newItem = MockDataConfigItem(
-            name: originalItem.name,
-            endpoint: originalItem.endpoint,
-            method: originalItem.method,
-            operationName: originalItem.operationName,
-            operationType: originalItem.operationType,
+            name: originalItem.configItem.name,
+            endpoint: originalItem.configItem.endpoint,
+            method: originalItem.configItem.method,
+            operationName: originalItem.configItem.operationName,
+            operationType: originalItem.configItem.operationType,
             useMock: newValue,
-            responseKey: originalItem.responseKey
+            responseKey: originalItem.configItem.responseKey
         )
 
-        networkTrafficManager.mockDataManager?.workingConfig.included[originalItem.key] = newItem
+        networkTrafficManager.mockDataManager?.workingConfig[originalItem.configItem.sanitizedKeyInfo.key] = EndpointConfig(
+            configItem: newItem,
+            manifestItem: originalItem.manifestItem
+        )
     }
 }

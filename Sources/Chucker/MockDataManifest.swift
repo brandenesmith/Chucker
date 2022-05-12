@@ -8,20 +8,37 @@
 import Foundation
 
 struct ManifestItem: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case name
+        case endpoint
+        case method
+        case operationType
+        case operationName
+        case responseMap
+    }
+
     let name: String
     let endpoint: String
     let method: String
     let operationType: String?
     let operationName: String?
     let responseMap: [String: String]
+    let sanitizedKeyInfo: SanitizedKeyInfo
+    let key: String
 
-    var key: String {
-        var key = "\(endpoint)\(method)"
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        if let opType = operationType { key += opType }
-        if let opName = operationName { key += opName }
+        name = try container.decode(String.self, forKey: .name)
+        endpoint = try container.decode(String.self, forKey: .endpoint)
+        method = try container.decode(String.self, forKey: .method)
+        operationType = try container.decodeIfPresent(String.self, forKey: .operationType)
+        operationName = try container.decodeIfPresent(String.self, forKey: .operationName)
+        responseMap = try container.decode([String: String].self, forKey: .responseMap)
 
-        return key
+
+        self.key = KeySanitizer.createKey(endpoint: endpoint, method: method, operationName: operationName, operationType: operationType)
+        self.sanitizedKeyInfo = KeySanitizer.getSanitizedKeyInfo(key: key)
     }
 }
 
