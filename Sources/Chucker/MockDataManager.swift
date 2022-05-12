@@ -18,8 +18,7 @@ final class MockDataManager {
     private let manifest: String
     private let bundle: Bundle
 
-    internal var workingManifest: MockDataManifest!
-    internal var workingConfig: MockDataConfig!
+    internal var workingConfig: [String: EndpointConfig]
 
     fileprivate static let apolloOperationTypeHeader = "X-APOLLO-OPERATION-TYPE"
     fileprivate static let apolloOperationNameHeader = "X-APOLLO-OPERATION-NAME"
@@ -28,26 +27,74 @@ final class MockDataManager {
         self.config = config
         self.manifest = manifest
         self.bundle = bundle
+        self.workingConfig = [:]
 
-        self.workingConfig = try! JSONDecoder().decode(MockDataConfig.self, from: try! data(for: config, in: bundle))
-        self.workingManifest = try! JSONDecoder().decode(MockDataManifest.self, from: try! data(for: manifest, in: bundle))
-    }
+        let decodedConfig = try! JSONDecoder().decode(MockDataConfig.self, from: try! data(for: config, in: bundle))
+        let decodedManifest = try! JSONDecoder().decode(MockDataManifest.self, from: try! data(for: manifest, in: bundle))
 
-    func mockResponse(for request: URLRequest) throws -> MockResponse {
-        let responseKey = workingConfig.included[request.key]!.responseKey
+        for (key, value) in decodedConfig.included {
+            guard let manifestItem = decodedManifest.items[key] else { continue }
 
-        return MockResponseDecoder()
-            .decodeMockResponse(
-                from: try! data(
-                    for: workingManifest.items[request.key]!.responseMap[responseKey]!,
-                    in: bundle
-                )
+            workingConfig[value.sanitizedKeyInfo.key] = EndpointConfig(
+                configItem: value,
+                manifestItem: manifestItem
             )
+        }
     }
 
-    func shouldMockResponse(for request: URLRequest) -> Bool {
-        return !request.key.hasMatchIn(workingConfig.excluded)
-            && (workingConfig.included[request.key]?.useMock ?? false)
+    func mockResponse(for request: URLRequest) throws -> MockResponse? {
+        let endpoint = KeySanitizer.stripHTTPS(from: request.key)
+
+        guard workingConfig[endpoint] == nil else {
+            let shouldMock = workingConfig[endpoint]!.configItem.useMock
+            let responseKey = workingConfig[endpoint]!.configItem.responseKey
+
+            if !shouldMock { return nil }
+
+            return MockResponseDecoder()
+                .decodeMockResponse(
+                    from: try! data(
+                        for: workingConfig[endpoint]!.manifestItem.responseMap[responseKey]!,
+                        in: bundle
+                    )
+                )
+        }
+
+        var tokenizedEndpoint = endpoint.split(separator: "/")
+
+        for item in workingConfig.keys {
+            let pathParamIndicies = workingConfig[item]!.configItem.sanitizedKeyInfo.pathParamIndicies
+
+            guard !pathParamIndicies.isEmpty else { continue }
+
+            let tokenizedItem = item.split(separator: "/")
+
+            guard tokenizedItem.count == tokenizedEndpoint.count - pathParamIndicies.count else { continue }
+
+            for index in pathParamIndicies {
+                tokenizedEndpoint.remove(at: index)
+            }
+
+            let joinedKey = tokenizedEndpoint.joined(separator: "/")
+            let joinedItem = tokenizedItem.joined(separator: "/")
+
+            if joinedKey == joinedItem {
+                let shouldMock = workingConfig[joinedKey]!.configItem.useMock
+                let responseKey = workingConfig[joinedKey]!.configItem.responseKey
+
+                if !shouldMock { return nil }
+
+                return MockResponseDecoder()
+                    .decodeMockResponse(
+                        from: try! data(
+                            for: workingConfig[joinedKey]!.manifestItem.responseMap[responseKey]!,
+                            in: bundle
+                        )
+                    )
+            }
+        }
+
+        return nil
     }
 
     private func data(for filename: String, in bundle: Bundle) throws -> Data {

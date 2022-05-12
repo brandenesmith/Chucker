@@ -61,14 +61,11 @@ extension URLSession {
     private func fakeDataTaskIfNeeded(with request: URLRequest,
                                       completionHandler: ((Data?, URLResponse?, Error?) -> Void)?) -> URLSessionDataTask? {
         if CommandLine.arguments.contains(String.CommandLineArgs.useMockData) {
-            let shouldMock = try? networkTrafficManager
-                .mockDataManager?
-                .shouldMockResponse(for: request)
-
-            if shouldMock ?? false {
+            if let mockResponse = try? networkTrafficManager.mockDataManager?.mockResponse(for: request) {
                 let fakeTask = FakeURLSessionTask(
                     request: request,
                     session: self,
+                    mockResponse: mockResponse,
                     completionHandler: completionHandler
                 )
 
@@ -83,9 +80,6 @@ extension URLSession {
 final class FakeURLSessionTask: URLSessionDataTask {
     override func resume() {
         let start = Date()
-        let mockResponse = try! networkTrafficManager.mockDataManager!.mockResponse(
-            for: _originalRequest
-        )
 
         let bytesToSend = Int64(_originalRequest.httpBody?.count ?? 0)
         (self.session?.delegate as? URLSessionTaskDelegate)?.urlSession?(
@@ -144,6 +138,7 @@ final class FakeURLSessionTask: URLSessionDataTask {
     private weak var session: URLSession?
     private let _originalRequest: URLRequest
     private var _response: HTTPURLResponse?
+    private var mockResponse: MockResponse
     private var completion: ((Data?, URLResponse?, Error?) -> Void)?
 
     override var originalRequest: URLRequest? {
@@ -158,10 +153,14 @@ final class FakeURLSessionTask: URLSessionDataTask {
         return _response
     }
 
-    init(request: URLRequest, session: URLSession, completionHandler: ((Data?, URLResponse?, Error?) -> Void)?) {
+    init(request: URLRequest,
+         session: URLSession,
+         mockResponse: MockResponse,
+         completionHandler: ((Data?, URLResponse?, Error?) -> Void)?) {
         self.session = session
         self._originalRequest = request
         self.completion = completionHandler
+        self.mockResponse = mockResponse
     }
 }
 
