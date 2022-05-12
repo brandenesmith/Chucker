@@ -23,7 +23,7 @@ final class ConfigItemPickerViewManager: NSObject {
     var isEditing: Bool = false
 
     init(managedItem: MockDataConfigItem, delegate: ConfigItemPickerViewManagerDelegate) {
-        self.managedItemKey = managedItem.key
+        self.managedItemKey = managedItem.sanitizedKeyInfo.key
         self.delegate = delegate
 
         self.pickerItems = networkTrafficManager
