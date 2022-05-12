@@ -75,8 +75,8 @@ final class MockDataManager {
                 tokenizedEndpoint.remove(at: index)
             }
 
-            let joinedKey = tokenizedEndpoint.joined(separator: "")
-            let joinedItem = tokenizedItem.joined(separator: "")
+            let joinedKey = tokenizedEndpoint.joined(separator: "/")
+            let joinedItem = tokenizedItem.joined(separator: "/")
 
             if joinedKey == joinedItem {
                 let shouldMock = workingConfig[joinedKey]!.configItem.useMock
