@@ -32,7 +32,7 @@ final class KeySanitizer {
         matches.forEach({ tokens.remove(at: $0) })
 
         return SanitizedKeyInfo(
-            key: tokens.joined(separator: ""),
+            key: tokens.joined(separator: "/"),
             pathParamIndicies: matches
         )
     }
