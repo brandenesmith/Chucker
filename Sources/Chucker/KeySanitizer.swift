@@ -38,11 +38,27 @@ final class KeySanitizer {
     }
 
     static func createKey(endpoint: String, method: String, operationName: String?, operationType: String?) -> String {
-        var key = "\(endpoint)\(method)"
+        var key = "\(KeySanitizer.stripHTTPS(from: endpoint))\(method)"
         if let opType = operationType { key += opType }
         if let opName = operationName { key += opName }
 
         return key
+    }
+
+    static func stripHTTPS(from endpoint: String) -> String {
+        guard
+            let https = try? NSRegularExpression(pattern: "https://"),
+            let http = try? NSRegularExpression(pattern: "http://")
+        else {
+            return endpoint
+        }
+
+        let mutableString = NSMutableString(string: endpoint)
+
+        https.replaceMatches(in: mutableString, range: NSRange(location: 0, length: mutableString.length), withTemplate: "")
+        http.replaceMatches(in: mutableString, range: NSRange(location: 0, length: mutableString.length), withTemplate: "")
+
+        return String(mutableString)
     }
 }
 

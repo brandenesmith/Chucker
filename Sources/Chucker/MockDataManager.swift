@@ -43,22 +43,24 @@ final class MockDataManager {
     }
 
     func mockResponse(for request: URLRequest) throws -> MockResponse? {
-        guard workingConfig[request.key] == nil else {
-            let shouldMock = workingConfig[request.key]!.configItem.useMock
-            let responseKey = workingConfig[request.key]!.configItem.responseKey
+        let endpoint = KeySanitizer.stripHTTPS(from: request.key)
+
+        guard workingConfig[endpoint] == nil else {
+            let shouldMock = workingConfig[endpoint]!.configItem.useMock
+            let responseKey = workingConfig[endpoint]!.configItem.responseKey
 
             if !shouldMock { return nil }
 
             return MockResponseDecoder()
                 .decodeMockResponse(
                     from: try! data(
-                        for: workingConfig[request.key]!.manifestItem.responseMap[responseKey]!,
+                        for: workingConfig[endpoint]!.manifestItem.responseMap[responseKey]!,
                         in: bundle
                     )
                 )
         }
 
-        var tokenizedKey = request.key.split(separator: "/")
+        var tokenizedEndpoint = endpoint.split(separator: "/")
 
         for item in workingConfig.keys {
             let pathParamIndicies = workingConfig[item]!.configItem.sanitizedKeyInfo.pathParamIndicies
@@ -67,14 +69,14 @@ final class MockDataManager {
 
             var tokenizedItem = item.split(separator: "/")
 
-            guard tokenizedKey.count == tokenizedItem.count - pathParamIndicies.count else { continue }
+            guard tokenizedEndpoint.count == tokenizedItem.count - pathParamIndicies.count else { continue }
 
             for index in pathParamIndicies {
-                tokenizedKey.remove(at: index)
+                tokenizedEndpoint.remove(at: index)
                 tokenizedItem.remove(at: index)
             }
 
-            let joinedKey = tokenizedKey.joined(separator: "")
+            let joinedKey = tokenizedEndpoint.joined(separator: "")
             let joinedItem = tokenizedItem.joined(separator: "")
 
             if joinedKey == joinedItem {
