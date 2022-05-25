@@ -71,27 +71,31 @@ final class MockDataManager {
 
             guard tokenizedItem.count == tokenizedEndpoint.count - pathParamIndicies.count else { continue }
 
-            for index in pathParamIndicies {
-                tokenizedEndpoint.remove(at: index)
+            var tokenizedEndpointCopy: [String] = []
+
+            for item in tokenizedEndpoint.enumerated() {
+                if !pathParamIndicies.contains(item.offset) {
+                    tokenizedEndpointCopy.append(String(item.element))
+                }
             }
 
-            let joinedKey = tokenizedEndpoint.joined(separator: "/")
+            let joinedKey = tokenizedEndpointCopy.joined(separator: "/")
             let joinedItem = tokenizedItem.joined(separator: "/")
 
-            if joinedKey == joinedItem {
-                let shouldMock = workingConfig[joinedKey]!.configItem.useMock
-                let responseKey = workingConfig[joinedKey]!.configItem.responseKey
+            guard joinedKey == joinedItem else { continue }
 
-                if !shouldMock { return nil }
+            let shouldMock = workingConfig[joinedKey]!.configItem.useMock
+            let responseKey = workingConfig[joinedKey]!.configItem.responseKey
 
-                return MockResponseDecoder()
-                    .decodeMockResponse(
-                        from: try! data(
-                            for: workingConfig[joinedKey]!.manifestItem.responseMap[responseKey]!,
-                            in: bundle
-                        )
+            if !shouldMock { return nil }
+
+            return MockResponseDecoder()
+                .decodeMockResponse(
+                    from: try! data(
+                        for: workingConfig[joinedKey]!.manifestItem.responseMap[responseKey]!,
+                        in: bundle
                     )
-            }
+                )
         }
 
         return nil
