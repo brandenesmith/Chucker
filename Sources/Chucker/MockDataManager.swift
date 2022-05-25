@@ -75,7 +75,7 @@ final class MockDataManager {
 
             for item in tokenizedEndpoint.enumerated() {
                 if !pathParamIndicies.contains(item.offset) {
-                    tokenizedEndpointCopy.append(item.element)
+                    tokenizedEndpointCopy.append(String(item.element))
                 }
             }
 
