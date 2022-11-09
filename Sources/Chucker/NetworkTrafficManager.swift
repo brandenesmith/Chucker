@@ -40,11 +40,15 @@ final class NetworkTrafficManager {
 
     private var _trafficItems: [NetworkListItem] {
         return trafficLog
-            .map({ NetworkListItem(request: $0, response: $1) })
+            .compactMap({
+                guard let item = $1 else { return nil }
+
+                return NetworkListItem(request: item.0, response: item.1)
+            })
             .sorted(by: { $0.request.date.compare($1.request.date) == .orderedDescending })
     }
 
-    private var trafficLog: [NetworkRequest: NetworkResponse?]
+    private var trafficLog: [Int: (NetworkRequest, NetworkResponse?)?]
 
     private init() {
         self.trafficLog = [:]
@@ -58,12 +62,12 @@ final class NetworkTrafficManager {
     }
 
     internal func addRequest(_ request: NetworkRequest) {
-//        trafficLog[request] = nil
-//        logItems = _trafficItems
+        trafficLog[request.request.hashValue] = nil
+        logItems = _trafficItems
     }
 
     internal func pairResponse(response: NetworkResponse, with request: NetworkRequest) {
-        trafficLog[request] = response
+        trafficLog[request.request.hashValue] = (request, response)
         logItems = _trafficItems
     }
 
