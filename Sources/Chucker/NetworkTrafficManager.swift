@@ -58,8 +58,8 @@ final class NetworkTrafficManager {
     }
 
     internal func addRequest(_ request: NetworkRequest) {
-        trafficLog[request] = nil
-        logItems = _trafficItems
+//        trafficLog[request] = nil
+//        logItems = _trafficItems
     }
 
     internal func pairResponse(response: NetworkResponse, with request: NetworkRequest) {
